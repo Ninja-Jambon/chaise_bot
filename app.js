@@ -4,16 +4,11 @@ const google = require('googlethis');
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 
-//variable 
-var last = "";
-
-
 //function to search google
 function image_search(query, ctx) {
     const images = google.image(query, { safe: false });
     images.then((results) => {
         var imgLink = results[Math.floor(Math.random() * results.length)].url
-        last = imgLink;
         console.log("--> sent the image for the query: " + query);
         bot.telegram.sendPhoto(ctx.chat.id, imgLink, {"caption": "This is a random image for the query : " + query});
     });
@@ -28,7 +23,7 @@ bot.command('start', ctx => {
 
 bot.help(ctx => {
     console.log(ctx.from)
-    ctx.reply('This is the help message :\nhelp command : \n  -/help\nAnime command : \n  -/anime\nimage search command : \n  -/search or /s')
+    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s\nGithub link command : \n  -/github')
 })
 
 bot.command('anime', ctx => {
@@ -44,6 +39,11 @@ bot.command('search', ctx => {
 bot.command('s', ctx => {
     console.log(ctx.from)
     image_search(ctx.message.text.slice(+3), ctx)
+})
+
+bot.command('github', ctx => {
+    console.log(ctx.from)
+    bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
 })
 
 //bot launch
