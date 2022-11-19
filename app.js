@@ -78,9 +78,5 @@ bot.command('suggest', ctx => {
     console.log('--> sent suggestion message to the channel')
 })
 
-bot.on('photo', ctx => {
-    console.log(ctx)
-})
-
 //bot launch
 bot.launch();
