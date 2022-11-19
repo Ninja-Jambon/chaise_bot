@@ -9,8 +9,8 @@ function image_search(query, ctx) {
     const images = google.image(query, { safe: false });
     images.then((results) => {
         var imgLink = results[Math.floor(Math.random() * results.length)].url
-        console.log("--> sent the image for the query: " + query);
         bot.telegram.sendPhoto(ctx.chat.id, imgLink, {"caption": "This is a random image for the query : " + query});
+        console.log("--> sent the image for the query: " + query);
     });
 }
 
@@ -31,6 +31,11 @@ bot.command('anime', ctx => {
     bot.telegram.sendMessage(ctx.chat.id, 'List of anime :\nKonosuba 1 : \nhttps://mega.nz/folder/M4gFRYbT#jiHwPRtkf7YyN6-MoguQcw\nKonosuba 2 :\nhttps://mega.nz/folder/JgZgiZbS#S0J1SoUd_TFKKun6SSJgmQ', {})
 })
 
+bot.command('github', ctx => {
+    console.log(ctx.from)
+    bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
+})
+
 bot.command('search', ctx => {
     console.log(ctx.from)
     image_search(ctx.message.text.slice(+8), ctx)
@@ -39,11 +44,6 @@ bot.command('search', ctx => {
 bot.command('s', ctx => {
     console.log(ctx.from)
     image_search(ctx.message.text.slice(+3), ctx)
-})
-
-bot.command('github', ctx => {
-    console.log(ctx.from)
-    bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
 })
 
 //bot launch
