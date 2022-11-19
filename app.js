@@ -37,7 +37,7 @@ bot.command('start', ctx => {
 })
 
 bot.help(ctx => {
-    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nGithub link command : \n  -/github')
+    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s <query>\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nSuggest command :\n  -/suggest <suggestion> (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)\nGithub link command : \n  -/github')
     console.log('--> sent the help message')
 })
 
@@ -69,7 +69,7 @@ bot.command('chatInfo', ctx => {
 })
 
 bot.command('suggest', ctx => {
-    bot.telegram.sendMessage(-1001845876532, 'New suggestion of ' + ctx.message.from.username + " : " + ctx.message.text, {})
+    bot.telegram.sendMessage('-1001782224138', 'New suggestion of ' + ctx.message.from.username + " : " + ctx.message.text.slice(+9), {})
     bot.telegram.sendMessage(ctx.chat.id, 'Your suggestion has been sent to the channel t.me/+SrzC81CGyusyODNk', {})
     console.log('--> sent suggestion message to the channel')
 })
