@@ -64,5 +64,15 @@ bot.command('truce', ctx => {
     isTrue(message, ctx)
 })
 
+bot.command('chatInfo', ctx => {
+    console.log(ctx.chat.id)
+})
+
+bot.command('suggest', ctx => {
+    bot.telegram.sendMessage(-1001845876532, 'New suggestion of ' + ctx.message.from.username + " : " + ctx.message.text, {})
+    bot.telegram.sendMessage(ctx.chat.id, 'Your suggestion has been sent to the channel t.me/+SrzC81CGyusyODNk', {})
+    console.log('--> sent suggestion message to the channel')
+})
+
 //bot launch
 bot.launch();
