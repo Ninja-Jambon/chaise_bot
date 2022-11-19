@@ -32,24 +32,23 @@ function isTrue(message, ctx) {
 
 //bot commands
 bot.command('start', ctx => {
-    console.log(ctx.from)
-    bot.telegram.sendMessage(ctx.chat.id, 'hello there! Welcome to my new telegram bot.\nType /help for help.', {
-    })
+    bot.telegram.sendMessage(ctx.chat.id, 'hello there! Welcome to my new telegram bot.\nType /help for help.', {})
+    console.log("--> sent the start message to " + ctx.message.from.username);
 })
 
 bot.help(ctx => {
-    console.log('--> sent help')
-    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s\nGithub link command : \n  -/github')
+    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nGithub link command : \n  -/github')
+    console.log('--> sent the help message')
 })
 
 bot.command('anime', ctx => {
-    console.log(ctx.from)
     bot.telegram.sendMessage(ctx.chat.id, 'List of anime :\nKonosuba 1 : \nhttps://mega.nz/folder/M4gFRYbT#jiHwPRtkf7YyN6-MoguQcw\nKonosuba 2 :\nhttps://mega.nz/folder/JgZgiZbS#S0J1SoUd_TFKKun6SSJgmQ', {})
+    console.log('--> sent anime list')
 })
 
 bot.command('github', ctx => {
-    console.log(ctx.from)
     bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
+    console.log('--> sent github link')
 })
 
 bot.command('search', ctx => {
