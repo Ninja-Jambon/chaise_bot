@@ -15,18 +15,22 @@ function image_search(query, ctx) {
 }
 
 function isTrue(message, ctx) {
-    var totalSum = 0
+    if (message != undefined) {
+        var totalSum = 0
 
-    for (var i = 0; i < message.length; i++) {
-        totalSum += message.charCodeAt(i)
-    }
-    if (totalSum%2  == 0) {
-        bot.telegram.sendMessage(ctx.chat.id, "This message is true", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
-        console.log("--> sent true for the query: " + message);
-    }
-    else {
-        bot.telegram.sendMessage(ctx.chat.id, "This message is false", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
-        console.log("--> sent false for the query: " + message);
+        for (var i = 0; i < message.length; i++) {
+            totalSum += message.charCodeAt(i)
+        }
+        if (totalSum%2  == 0) {
+            bot.telegram.sendMessage(ctx.chat.id, "This message is true", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
+            console.log("--> sent true for the query: " + message);
+        }
+        else {
+            bot.telegram.sendMessage(ctx.chat.id, "This message is false", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
+            console.log("--> sent false for the query: " + message);
+        }
+    } else {
+        bot.telegram.sendMessage(ctx.chat.id, "Please reply to a text message", {'reply_to_message_id': ctx.update.message.message_id});
     }
 }
 
@@ -72,6 +76,10 @@ bot.command('suggest', ctx => {
     bot.telegram.sendMessage('-1001782224138', 'New suggestion of ' + ctx.message.from.username + " : " + ctx.message.text.slice(+9), {})
     bot.telegram.sendMessage(ctx.chat.id, 'Your suggestion has been sent to the channel t.me/+SrzC81CGyusyODNk', {})
     console.log('--> sent suggestion message to the channel')
+})
+
+bot.on('photo', ctx => {
+    console.log(ctx)
 })
 
 //bot launch
