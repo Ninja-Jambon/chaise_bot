@@ -4,7 +4,7 @@ const google = require('googlethis');
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 
-//function to search google
+//functions
 function image_search(query, ctx) {
     const images = google.image(query, { safe: false });
     images.then((results) => {
@@ -12,6 +12,22 @@ function image_search(query, ctx) {
         bot.telegram.sendPhoto(ctx.chat.id, imgLink, {"caption": "This is a random image for the query : " + query});
         console.log("--> sent the image for the query: " + query);
     });
+}
+
+function isTrue(message, ctx) {
+    var totalSum = 0
+
+    for (var i = 0; i < message.length; i++) {
+        totalSum += message.charCodeAt(i)
+    }
+    if (totalSum%2  == 0) {
+        bot.telegram.sendMessage(ctx.chat.id, "This message is true", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
+        console.log("--> sent true for the query: " + message);
+    }
+    else {
+        bot.telegram.sendMessage(ctx.chat.id, "This message is false", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
+        console.log("--> sent false for the query: " + message);
+    }
 }
 
 //bot commands
@@ -22,7 +38,7 @@ bot.command('start', ctx => {
 })
 
 bot.help(ctx => {
-    console.log(ctx.from)
+    console.log('--> sent help')
     ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s\nGithub link command : \n  -/github')
 })
 
@@ -37,13 +53,16 @@ bot.command('github', ctx => {
 })
 
 bot.command('search', ctx => {
-    console.log(ctx.from)
     image_search(ctx.message.text.slice(+8), ctx)
 })
 
 bot.command('s', ctx => {
-    console.log(ctx.from)
     image_search(ctx.message.text.slice(+3), ctx)
+})
+
+bot.command('truce', ctx => {
+    const message = ctx.update.message.reply_to_message.text
+    isTrue(message, ctx)
 })
 
 //bot launch
