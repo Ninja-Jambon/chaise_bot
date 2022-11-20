@@ -1,7 +1,6 @@
 const { Telegraf } = require('telegraf');
 const google = require('googlethis');
 const fs = require('fs');
-const { assert } = require('console');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
