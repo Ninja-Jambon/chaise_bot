@@ -84,8 +84,7 @@ bot.command('s', ctx => {
 })
 
 bot.command('truce', ctx => {
-    const message = ctx.update.message.reply_to_message.text
-    isTrue(message, ctx)
+    isTrue(ctx.update.message.reply_to_message.text, ctx)
 })
 
 bot.command('chatInfo', ctx => {
