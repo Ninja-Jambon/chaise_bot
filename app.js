@@ -8,10 +8,18 @@ const bot = new Telegraf(process.env.TELEGRAM);
 
 //functions
 function image_search(query, ctx) {
-    const images = google.image(query, { safe: false });
+    const images = google.image(query, { safe: false }).catch(err => {
+        console.log(err);
+        addToLogs("--> error : " + err);
+        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {"reply_to_message_id": ctx.update.message.message_id});
+    });
     images.then((results) => {
         var imgLink = results[Math.floor(Math.random() * results.length)].url
-        bot.telegram.sendPhoto(ctx.chat.id, imgLink, {"caption": "This is a random image for the query : " + query});
+        bot.telegram.sendPhoto(ctx.chat.id, imgLink, {"caption": "This is a random image for the query : " + query}).catch(err => {
+            console.log(err);
+            addToLogs("--> error : " + err);
+            bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {"reply_to_message_id": ctx.update.message.message_id});
+        });
         console.log("--> sent the image for the query: " + query);
         addToLogs("--> sent the image for the query: " + query);
     })
@@ -25,7 +33,6 @@ function isTrue(message, ctx) {
 
         for (var i = 0; i < message.length; i++) {
             totalSum += message.charCodeAt(i)
-
         }
         if (totalSum%2  == 0) {
             bot.telegram.sendMessage(ctx.chat.id, "This message is true", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
