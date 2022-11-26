@@ -132,7 +132,7 @@ bot.command('start', ctx => {
 })
 
 bot.help(ctx => {
-    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s <query>\nRule34 tag command :\n  -/r34tag or /rtag <querry>\nRule 34 image search :\n  -/r34 <tag>\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nSuggest command :\n  -/suggest <suggestion> (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)\nGithub link command : \n  -/github')
+    bot.telegram.sendMessage(ctx.chat.id, 'This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -`/s <query>`\nRule34 tag command :\n  -`/rtag <querry>`\nRule 34 image search :\n  -`/r34 <tag>`\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nSuggest command :\n  -`/suggest <suggestion>` (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)\nGithub link command : \n  -/github', {parse_mode: "Markdown"})
     console.log('--> sent the help message')
     addToLogs('--> sent the help message')
 })
@@ -147,10 +147,6 @@ bot.command('github', ctx => {
     bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
     console.log('--> sent github link')
     addToLogs('--> sent github link')
-})
-
-bot.command('search', ctx => {
-    image_search(ctx.message.text.slice(+8), ctx)
 })
 
 bot.command('s', ctx => {
@@ -172,10 +168,6 @@ bot.command('suggest', ctx => {
     addToLogs('--> sent suggestion message to the channel')
 })
 
-bot.command('r34tag', ctx => {
-    r34sTag(ctx.message.text.slice(+8), ctx)
-})
-
 bot.command('rtag', ctx => {
     r34sTag(ctx.message.text.slice(+6), ctx)
 })
@@ -184,8 +176,5 @@ bot.command('r34', ctx => {
     r34(ctx.message.text.slice(+5), ctx)
 })
 
-bot.command('test', ctx => {
-    bot.telegram.sendMessage(ctx.chat.id, "`test`", {parse_mode: 'Markdown'})
-})
 //bot launch
 bot.launch();
