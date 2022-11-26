@@ -60,7 +60,7 @@ function r34sTag(query, ctx) {
         });
         resp.on('end', () => {
             res = JSON.parse(data);
-            message = "Tags for the query: " + query + "\n" ;
+            message = "Tags for the query " + query + " :\n" ;
 
             if (res.length == 0) {
                 console.log("--> no tags found for the query: " + query);
@@ -68,10 +68,10 @@ function r34sTag(query, ctx) {
                 bot.telegram.sendMessage(ctx.chat.id, "No tags found for the query: " + query, {});
             } else {
                 for (var i = 0; i < res.length; i++) {
-                    message += "\n  - " + res[i].value;
+                    message += "\n  - `" + res[i].value+"`";
                 }
-                message += "\n\nUse /r34 <tag> to get a random image for the tag";
-                bot.telegram.sendMessage(ctx.chat.id, message, {});
+                message += "\n\nUse `/r34 <tag>` to get a random image for the tag" + "\nExample: `/r34 " + res[0].value + "`";
+                bot.telegram.sendMessage(ctx.chat.id, message, {parse_mode: "Markdown"});
                 console.log("--> sent the tags for the query: " + query);
                 addToLogs("--> sent the tags for the query: " + query);
             }
@@ -93,17 +93,26 @@ function r34(tag, ctx) {
             data += chunk;
         });
         resp.on('end', () => {
-            res = JSON.parse(data);
+            //test if data is empty
+            if (data == "") {
+                console.log("--> no images found for the query: " + tag);
+                addToLogs("--> no images found for the query: " + tag);
+                bot.telegram.sendMessage(ctx.chat.id, "No images found for the query: " + tag + "\nUse /r34tag command to find a tag before searching an image", {});
+            } else {
+                res = JSON.parse(data);
 
-            bot.telegram.sendPhoto(ctx.chat.id, res[Math.floor(Math.random() * res.length)].file_url, {"caption": "This is a random image for the tag : " + tag}).catch(err => {
-                console.log(err);
-                addToLogs("--> error : " + err);
-                bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
-            });
+                bot.telegram.sendPhoto(ctx.chat.id, res[Math.floor(Math.random() * res.length)].file_url, {"caption": "This is a random image for the tag : " + tag}).catch(err => {
+                    console.log(err);
+                    addToLogs("--> error : " + err);
+                    bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+                });
+            }
         });
         
     }).on("error", (err) => {
         console.log("Error: " + err.message);
+        addToLogs("--> error : " + err);
+        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
     });
 }
 
@@ -175,5 +184,8 @@ bot.command('r34', ctx => {
     r34(ctx.message.text.slice(+5), ctx)
 })
 
+bot.command('test', ctx => {
+    bot.telegram.sendMessage(ctx.chat.id, "`test`", {parse_mode: 'Markdown'})
+})
 //bot launch
 bot.launch();
