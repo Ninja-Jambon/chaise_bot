@@ -60,25 +60,17 @@ function r34sTag(query, ctx) {
         });
         resp.on('end', () => {
             res = JSON.parse(data);
-            message = "Tags for the query: " + query + "\n\n" ;
+            message = "Tags for the query: " + query + "\n" ;
 
             if (res.length == 0) {
                 console.log("--> no tags found for the query: " + query);
                 addToLogs("--> no tags found for the query: " + query);
                 bot.telegram.sendMessage(ctx.chat.id, "No tags found for the query: " + query, {});
-            } else if (res.length > 10) {
-                for (var i = 0; i < 10; i++) {
-                    message += "  - " + res[i].value + "\n";
-                }
-                message += "\nUse /r34 <tag> to get a random image for the tag";
-                bot.telegram.sendMessage(ctx.chat.id, message, {});
-                console.log("--> sent the tags for the query: " + query);
-                addToLogs("--> sent the tags for the query: " + query);
             } else {
                 for (var i = 0; i < res.length; i++) {
-                    message += "  - " + res[i].value + "\n";
+                    message += "\n  - " + res[i].value;
                 }
-                message += "\nUse /r34 <tag> to get a random image for the tag";
+                message += "\n\nUse /r34 <tag> to get a random image for the tag";
                 bot.telegram.sendMessage(ctx.chat.id, message, {});
                 console.log("--> sent the tags for the query: " + query);
                 addToLogs("--> sent the tags for the query: " + query);
@@ -131,7 +123,7 @@ bot.command('start', ctx => {
 })
 
 bot.help(ctx => {
-    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s <query>\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nSuggest command :\n  -/suggest <suggestion> (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)\nGithub link command : \n  -/github')
+    ctx.reply('This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -/search or /s <query>\nRule34 tag command :\n  -/r34tag or /rtag <querry>\nRule 34 image search :\n  -/r34 <tag>\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nSuggest command :\n  -/suggest <suggestion> (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)\nGithub link command : \n  -/github')
     console.log('--> sent the help message')
     addToLogs('--> sent the help message')
 })
@@ -171,8 +163,12 @@ bot.command('suggest', ctx => {
     addToLogs('--> sent suggestion message to the channel')
 })
 
-bot.command('r34sTag', ctx => {
-    r34sTag(ctx.message.text.slice(+9), ctx)
+bot.command('r34tag', ctx => {
+    r34sTag(ctx.message.text.slice(+8), ctx)
+})
+
+bot.command('rtag', ctx => {
+    r34sTag(ctx.message.text.slice(+6), ctx)
 })
 
 bot.command('r34', ctx => {
