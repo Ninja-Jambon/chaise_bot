@@ -1,6 +1,7 @@
 const { Telegraf } = require('telegraf');
 const google = require('googlethis');
 const fs = require('fs');
+const https = require('https');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -46,6 +47,72 @@ function isTrue(message, ctx) {
     } else {
         bot.telegram.sendMessage(ctx.chat.id, "Please reply to a text message", {'reply_to_message_id': ctx.update.message.message_id});
     }
+}
+
+function r34sTag(query, ctx) {
+    console.log("--> r34sTag query: " + query);
+    addToLogs("--> r34sTag query: " + query);
+    https.get("https://rule34.xxx/public/autocomplete.php?q=" + query, (resp) => {
+        let data = '';
+            
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+        resp.on('end', () => {
+            res = JSON.parse(data);
+            message = "Tags for the query: " + query + "\n\n" ;
+
+            if (res.length == 0) {
+                console.log("--> no tags found for the query: " + query);
+                addToLogs("--> no tags found for the query: " + query);
+                bot.telegram.sendMessage(ctx.chat.id, "No tags found for the query: " + query, {});
+            } else if (res.length > 10) {
+                for (var i = 0; i < 10; i++) {
+                    message += "  - " + res[i].value + "\n";
+                }
+                message += "\nUse /r34 <tag> to get a random image for the tag";
+                bot.telegram.sendMessage(ctx.chat.id, message, {});
+                console.log("--> sent the tags for the query: " + query);
+                addToLogs("--> sent the tags for the query: " + query);
+            } else {
+                for (var i = 0; i < res.length; i++) {
+                    message += "  - " + res[i].value + "\n";
+                }
+                message += "\nUse /r34 <tag> to get a random image for the tag";
+                bot.telegram.sendMessage(ctx.chat.id, message, {});
+                console.log("--> sent the tags for the query: " + query);
+                addToLogs("--> sent the tags for the query: " + query);
+            }
+        });
+
+    }).on("error", (err) => {
+        console.log(err);
+        addToLogs("--> error : " + err);
+    })
+}
+
+function r34(tag, ctx) {
+    console.log("--> r34 query: " + tag);
+    addToLogs("--> r34 query: " + tag);
+    https.get('https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&tags=' + tag, (resp) => {
+        let data = '';
+        
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+        resp.on('end', () => {
+            res = JSON.parse(data);
+
+            bot.telegram.sendPhoto(ctx.chat.id, res[Math.floor(Math.random() * res.length)].file_url, {"caption": "This is a random image for the tag : " + tag}).catch(err => {
+                console.log(err);
+                addToLogs("--> error : " + err);
+                bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+            });
+        });
+        
+    }).on("error", (err) => {
+        console.log("Error: " + err.message);
+    });
 }
 
 function addToLogs(message) {
@@ -102,6 +169,14 @@ bot.command('suggest', ctx => {
     bot.telegram.sendMessage(ctx.chat.id, 'Your suggestion has been sent to the channel t.me/+SrzC81CGyusyODNk', {})
     console.log('--> sent suggestion message to the channel')
     addToLogs('--> sent suggestion message to the channel')
+})
+
+bot.command('r34sTag', ctx => {
+    r34sTag(ctx.message.text.slice(+9), ctx)
+})
+
+bot.command('r34', ctx => {
+    r34(ctx.message.text.slice(+5), ctx)
 })
 
 //bot launch
