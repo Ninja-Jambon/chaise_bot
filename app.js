@@ -18,7 +18,31 @@ bot.command('start', ctx => {
 })
 
 bot.help(ctx => {
-    bot.telegram.sendMessage(ctx.chat.id, 'This is the help message :\nHelp command : \n  -/help\nAnime command : \n  -/anime\nImage search command : \n  -`/s <query>`\nRule34 tag command :\n  -`/rtag <querry>`\nRule 34 image search :\n  -`/r34 <tag>`\nTruce command :\n  -/truce (reply to a message with that command to verify it)\nSuggest command :\n  -`/suggest <suggestion>` (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)\nGithub link command : \n  -/github', {parse_mode: "Markdown"})
+    const helpMessage = 
+    `
+    This is the help message :
+    Help command :
+      -/help
+    Anime command :
+     -/anime
+    Image search command :
+      -\`/s <query>\`
+    Dad jokes command :
+      -/dadjoke
+    Rock Paper Scissors command :
+      -\`/rps <rock/paper/scissors>\`
+    Rule34 tag command :
+      -\`/rtag <querry>\`
+    Rule 34 image search :
+      -\`/r34 <tag>\`
+    Truce command :
+      -/truce (reply to a message with that command to verify it)
+    Suggest command :
+      -\`/suggest <suggestion>\` (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)
+    Github link command :   
+      -/github
+    `
+    bot.telegram.sendMessage(ctx.chat.id, helpMessage, {parse_mode: "Markdown"})
     console.log('--> sent the help message')
     addToLogs('--> sent the help message')
 })
