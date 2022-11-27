@@ -3,11 +3,17 @@ const google = require('googlethis');
 const fs = require('fs');
 const https = require('https');
 
+const r34 = require('./rule34');
+const { addToLogs } = require('./botTools');
+
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 
 //functions
 function image_search(query, ctx) {
+    //
+    //Search for an image on google and send it to the user
+    //
     const images = google.image(query, { safe: false }).catch(err => {
         console.log(err);
         addToLogs("--> error : " + err);
@@ -26,6 +32,9 @@ function image_search(query, ctx) {
 }
 
 function isTrue(message, ctx) {
+    //
+    //Check if the message is a command
+    //
     if (message != undefined) {
         console.log("--> message received: " + message);
         addToLogs("--> message received: " + message);
@@ -47,81 +56,6 @@ function isTrue(message, ctx) {
     } else {
         bot.telegram.sendMessage(ctx.chat.id, "Please reply to a text message", {'reply_to_message_id': ctx.update.message.message_id});
     }
-}
-
-function r34sTag(query, ctx) {
-    console.log("--> r34sTag query: " + query);
-    addToLogs("--> r34sTag query: " + query);
-    https.get("https://rule34.xxx/public/autocomplete.php?q=" + query, (resp) => {
-        let data = '';
-            
-        resp.on('data', (chunk) => {
-            data += chunk;
-        });
-        resp.on('end', () => {
-            res = JSON.parse(data);
-            message = "Tags for the query " + query + " :\n" ;
-
-            if (res.length == 0) {
-                console.log("--> no tags found for the query: " + query);
-                addToLogs("--> no tags found for the query: " + query);
-                bot.telegram.sendMessage(ctx.chat.id, "No tags found for the query: " + query, {});
-            } else {
-                for (var i = 0; i < res.length; i++) {
-                    message += "\n  - `" + res[i].value+"`";
-                }
-                message += "\n\nUse `/r34 <tag>` to get a random image for the tag" + "\nExample: `/r34 " + res[0].value + "`";
-                bot.telegram.sendMessage(ctx.chat.id, message, {parse_mode: "Markdown"});
-                console.log("--> sent the tags for the query: " + query);
-                addToLogs("--> sent the tags for the query: " + query);
-            }
-        });
-
-    }).on("error", (err) => {
-        console.log(err);
-        addToLogs("--> error : " + err);
-    })
-}
-
-function r34(tag, ctx) {
-    console.log("--> r34 query: " + tag);
-    addToLogs("--> r34 query: " + tag);
-    https.get('https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&tags=' + tag, (resp) => {
-        let data = '';
-        
-        resp.on('data', (chunk) => {
-            data += chunk;
-        });
-        resp.on('end', () => {
-            //test if data is empty
-            if (data == "") {
-                console.log("--> no images found for the query: " + tag);
-                addToLogs("--> no images found for the query: " + tag);
-                bot.telegram.sendMessage(ctx.chat.id, "No images found for the query: " + tag + "\nUse /r34tag command to find a tag before searching an image", {});
-            } else {
-                res = JSON.parse(data);
-
-                bot.telegram.sendPhoto(ctx.chat.id, res[Math.floor(Math.random() * res.length)].file_url, {"caption": "This is a random image for the tag : " + tag}).catch(err => {
-                    console.log(err);
-                    addToLogs("--> error : " + err);
-                    bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
-                });
-            }
-        });
-        
-    }).on("error", (err) => {
-        console.log("Error: " + err.message);
-        addToLogs("--> error : " + err);
-        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
-    });
-}
-
-function addToLogs(message) {
-    fs.appendFile('./logs/logs.txt', message + "\n", err => {
-        if (err) {
-            console.log(err);
-        }
-    });
 }
 
 //bot commands
@@ -169,11 +103,15 @@ bot.command('suggest', ctx => {
 })
 
 bot.command('rtag', ctx => {
-    r34sTag(ctx.message.text.slice(+6), ctx)
+    r34.rtag(ctx.message.text.slice(+6), ctx, bot)
 })
 
 bot.command('r34', ctx => {
-    r34(ctx.message.text.slice(+5), ctx)
+    r34.r34(ctx.message.text.slice(+5), ctx, bot)
+})
+
+bot.command('rps', ctx => {
+    rockPaperCiscors(ctx.message.text.slice(+5), ctx)
 })
 
 //bot launch
