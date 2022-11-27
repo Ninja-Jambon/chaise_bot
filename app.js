@@ -6,6 +6,7 @@ const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, image_search } = require('./libs/botTools');
 const { rockPaperScissorsAgainstBot } = require('./libs/games');
+const { generateImage } = require('./libs/openAi');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -20,27 +21,29 @@ bot.command('start', ctx => {
 bot.help(ctx => {
     const helpMessage = 
     `
-    This is the help message :
-    Help command :
-      -/help
-    Anime command :
-     -/anime
-    Image search command :
-      -\`/s <query>\`
-    Dad jokes command :
-      -/dadjoke
-    Rock Paper Scissors command :
-      -\`/rps <rock/paper/scissors>\`
-    Rule34 tag command :
-      -\`/rtag <querry>\`
-    Rule 34 image search :
-      -\`/r34 <tag>\`
-    Truce command :
-      -/truce (reply to a message with that command to verify it)
-    Suggest command :
-      -\`/suggest <suggestion>\` (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)
-    Github link command :   
-      -/github
+This is the help message :
+Help command :
+  -/help
+Anime command :
+  -/anime
+AI Generated image command :
+  -\`/g <query>\` 
+Image search command :
+  -\`/s <query>\`
+Dad jokes command :
+  -/dadjoke
+Rock Paper Scissors command :
+  -\`/rps <rock/paper/scissors>\`
+Rule34 tag command :
+  -\`/rtag <querry>\`
+Rule 34 image search :
+  -\`/r34 <tag>\`
+Truce command :
+  -/truce (reply to a message with that command to verify it)
+Suggest command :
+  -\`/suggest <suggestion>\` (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)
+Github link command :   
+  -/github
     `
     bot.telegram.sendMessage(ctx.chat.id, helpMessage, {parse_mode: "Markdown"})
     console.log('--> sent the help message')
@@ -93,6 +96,10 @@ bot.command('dadjoke', ctx => {
 
 bot.command('rps', ctx => {
     rockPaperScissorsAgainstBot(ctx.message.text.slice(+5), ctx, bot)
+})
+
+bot.command('g', ctx => {
+    generateImage(ctx.message.text.slice(+3), ctx, bot)
 })
 
 //bot launch
