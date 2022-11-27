@@ -5,6 +5,7 @@ const { Telegraf } = require('telegraf');
 const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, image_search } = require('./libs/botTools');
+const { rockPaperScissorsAgainstBot } = require('./libs/games');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -64,6 +65,10 @@ bot.command('r34', ctx => {
 bot.command('dadjoke', ctx => {
     getJoke(ctx, bot)
     console.log('--> sent a dad joke')
+})
+
+bot.command('rps', ctx => {
+    rockPaperScissorsAgainstBot(ctx.message.text.slice(+5), ctx, bot)
 })
 
 //bot launch

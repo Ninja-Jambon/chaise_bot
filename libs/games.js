@@ -1,50 +1,56 @@
-function rockPaperScissorsAgainstBot(ctx, bot) {
-  // Variables
-  var userChoice;
-  var computerChoice;
-  const CHOICES = ["rock", "paper", "scissors"];
+function rockPaperScissorsAgainstBot(userChoice, ctx, bot) {
+  const choices = ["rock", "paper", "scissors"];
 
-  // Computer choice
+  if (choices.includes(userChoice) == true) 
+  {
+    const botChoice = choices[Math.floor(Math.random() * choices.length)];
+    bot.telegram.sendMessage(ctx.chat.id, "You chose " + userChoice + " and I chose " + botChoice, {})
 
-  computerChoice = CHOICES[Math.floor(Math.random() * CHOICES.length)];
-
-  // User choice
-
-  bot.telegram.sendMessage(ctx.chat.id, "Choose between rock, paper or scissors", {});
-  
-
-
-  //Display choices
-  bot.telegram.sendMessage(ctx.chat.id, "You chose " + userChoice + ". The bot chose " + computerChoice + ".");
-
-  // Winner
-  switch (userChoice) {
-    case "rock":
-      if (computerChoice == "rock") {
-        ctx.reply("It's a tie");
-      } else if (computerChoice == "paper") {
-        ctx.reply("You lose");
-      } else {
-        ctx.reply("You win");
+    //wait 50ms
+    setTimeout(function() {
+      if (userChoice == botChoice) 
+      {
+        bot.telegram.sendMessage(ctx.chat.id, "It's a tie!", {});
+      } 
+      else if (userChoice == "rock") 
+      {
+        if (botChoice == "paper") 
+        {
+          bot.telegram.sendMessage(ctx.chat.id, "You lose! Paper beats rock.", {});
+        } 
+        else 
+        {
+          bot.telegram.sendMessage(ctx.chat.id, "You win! Rock beats scissors.", {});
+        }
+      } 
+      else if (userChoice == "paper") 
+      {
+        if (botChoice == "scissors") 
+        {
+          bot.telegram.sendMessage(ctx.chat.id, "You lose! Scissors beats paper.", {});
+        } 
+        else 
+        {
+          bot.telegram.sendMessage(ctx.chat.id, "You win! Paper beats rock.", {});
+        }
+      } 
+      else if (userChoice == "scissors") 
+      {
+        if (botChoice == "rock") 
+        {
+          bot.telegram.sendMessage(ctx.chat.id, "You lose! Rock beats scissors.", {});
+        } 
+        else 
+        {
+          bot.telegram.sendMessage(ctx.chat.id, "You win! Scissors beats paper.", {});
+        }
       }
-      break;
-    case "paper":
-      if (computerChoice == "rock") {
-        ctx.reply("You win");
-      } else if (computerChoice == "paper") {
-        ctx.reply("It's a tie");
-      } else {
-        ctx.reply("You lose");
-      }
-      break;
-    case "scissors":
-      if (computerChoice == "rock") {
-        ctx.reply("You lose");
-      } else if (computerChoice == "paper") {
-        ctx.reply("You win");
-      } else {
-        ctx.reply("It's a tie");
-      }
-      break;
+    }, 50);
+  } else 
+  {
+    bot.telegram.sendMessage(ctx.chat.id, "Please choose between rock, paper and scisors", {});
   }
+
 }
+
+module.exports = { rockPaperScissorsAgainstBot };
