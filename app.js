@@ -1,9 +1,10 @@
+//Importing libs
 const { Telegraf } = require('telegraf');
-const fs = require('fs');
-const https = require('https');
-const { getJoke } = require('./dadJokes');
-const r34 = require('./rule34');
-const { addToLogs, isTrue, image_search } = require('./botTools');
+
+//Importing other files
+const { getJoke } = require('./libs/dadJokes');
+const { rtag, r34 } = require('./libs/rule34');
+const { addToLogs, isTrue, image_search } = require('./libs/botTools');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -53,11 +54,11 @@ bot.command('suggest', ctx => {
 })
 
 bot.command('rtag', ctx => {
-    r34.rtag(ctx.message.text.slice(+6), ctx, bot)
+    rtag(ctx.message.text.slice(+6), ctx, bot)
 })
 
 bot.command('r34', ctx => {
-    r34.r34(ctx.message.text.slice(+5), ctx, bot)
+    r34(ctx.message.text.slice(+5), ctx, bot)
 })
 
 bot.command('dadjoke', ctx => {
