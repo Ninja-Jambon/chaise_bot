@@ -1,62 +1,12 @@
 const { Telegraf } = require('telegraf');
-const google = require('googlethis');
 const fs = require('fs');
 const https = require('https');
-
+const { getJoke } = require('./dadJokes');
 const r34 = require('./rule34');
-const { addToLogs } = require('./botTools');
+const { addToLogs, isTrue, image_search } = require('./botTools');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
-
-//functions
-function image_search(query, ctx) {
-    //
-    //Search for an image on google and send it to the user
-    //
-    const images = google.image(query, { safe: false }).catch(err => {
-        console.log(err);
-        addToLogs("--> error : " + err);
-        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {"reply_to_message_id": ctx.update.message.message_id});
-    });
-    images.then((results) => {
-        var imgLink = results[Math.floor(Math.random() * results.length)].url
-        bot.telegram.sendPhoto(ctx.chat.id, imgLink, {"caption": "This is a random image for the query : " + query}).catch(err => {
-            console.log(err);
-            addToLogs("--> error : " + err);
-            bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {"reply_to_message_id": ctx.update.message.message_id});
-        });
-        console.log("--> sent the image for the query: " + query);
-        addToLogs("--> sent the image for the query: " + query);
-    })
-}
-
-function isTrue(message, ctx) {
-    //
-    //Check if the message is a command
-    //
-    if (message != undefined) {
-        console.log("--> message received: " + message);
-        addToLogs("--> message received: " + message);
-        var totalSum = 0
-
-        for (var i = 0; i < message.length; i++) {
-            totalSum += message.charCodeAt(i)
-        }
-        if (totalSum%2  == 0) {
-            bot.telegram.sendMessage(ctx.chat.id, "This message is true", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
-            console.log("--> sent true for the query: " + message);
-            addToLogs("--> sent true for the query: " + message);
-        }
-        else {
-            bot.telegram.sendMessage(ctx.chat.id, "This message is false", {"reply_to_message_id": ctx.update.message.reply_to_message.message_id});
-            console.log("--> sent false for the query: " + message);
-            addToLogs("--> sent false for the query: " + message);
-        }
-    } else {
-        bot.telegram.sendMessage(ctx.chat.id, "Please reply to a text message", {'reply_to_message_id': ctx.update.message.message_id});
-    }
-}
 
 //bot commands
 bot.command('start', ctx => {
@@ -84,11 +34,11 @@ bot.command('github', ctx => {
 })
 
 bot.command('s', ctx => {
-    image_search(ctx.message.text.slice(+3), ctx)
+    image_search(ctx.message.text.slice(+3), ctx, bot)
 })
 
 bot.command('truce', ctx => {
-    isTrue(ctx.update.message.reply_to_message.text, ctx)
+    isTrue(ctx.update.message.reply_to_message.text, ctx, bot)
 })
 
 bot.command('chatInfo', ctx => {
@@ -110,8 +60,9 @@ bot.command('r34', ctx => {
     r34.r34(ctx.message.text.slice(+5), ctx, bot)
 })
 
-bot.command('rps', ctx => {
-    rockPaperCiscors(ctx.message.text.slice(+5), ctx)
+bot.command('dadjoke', ctx => {
+    getJoke(ctx, bot)
+    console.log('--> sent a dad joke')
 })
 
 //bot launch
