@@ -1,10 +1,11 @@
 //Importing libs
 const { Telegraf } = require('telegraf');
+const fs = require('fs');
 
 //Importing other files
 const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
-const { addToLogs, isTrue, image_search } = require('./libs/botTools');
+const { addToLogs, isTrue, image_search, getHelp } = require('./libs/botTools');
 const { rockPaperScissorsAgainstBot } = require('./libs/games');
 const { generateImage } = require('./libs/openAi');
 
@@ -18,36 +19,19 @@ bot.command('start', ctx => {
     addToLogs("--> sent the start message to " + ctx.message.from.username);
 })
 
-bot.help(ctx => {
-    const helpMessage = 
-    `
-This is the help message :
-Help command :
-  -/help
-Anime command :
-  -/anime
-AI Generated image command :
-  -\`/g <query>\` 
-Image search command :
-  -\`/s <query>\`
-Dad jokes command :
-  -/dadjoke
-Rock Paper Scissors command :
-  -\`/rps <rock/paper/scissors>\`
-Rule34 tag command :
-  -\`/rtag <querry>\`
-Rule 34 image search :
-  -\`/r34 <tag>\`
-Truce command :
-  -/truce (reply to a message with that command to verify it)
-Suggest command :
-  -\`/suggest <suggestion>\` (allows you to add a suggestion to the chanel t.me/+SrzC81CGyusyODNk)
-Github link command :   
-  -/github
-    `
-    bot.telegram.sendMessage(ctx.chat.id, helpMessage, {parse_mode: "Markdown"})
-    console.log('--> sent the help message')
-    addToLogs('--> sent the help message')
+bot.command('help', ctx => {
+    if (ctx.message.text.slice(+6) != '') {
+        getHelp(ctx.message.text.slice(+6), ctx, bot);
+    } else {
+        fs.readFile('./src/helps/default.txt', 'utf8', (err, data) => {
+            if (err) {
+                console.log(err);
+                bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+            } else {
+                bot.telegram.sendMessage(ctx.chat.id, data, {parse_mode: 'Markdown'});
+            }
+        });
+    }
 })
 
 bot.command('anime', ctx => {
@@ -70,8 +54,10 @@ bot.command('truce', ctx => {
     isTrue(ctx.update.message.reply_to_message.text, ctx, bot)
 })
 
-bot.command('chatInfo', ctx => {
-    console.log(ctx.chat.id)
+bot.command('chatinfo', ctx => {
+    console.log('--> sent chat info')
+    addToLogs('--> sent chat info')
+    bot.telegram.sendMessage(ctx.chat.id, 'Chat id : ' + ctx.chat.id, {})
 })
 
 bot.command('suggest', ctx => {

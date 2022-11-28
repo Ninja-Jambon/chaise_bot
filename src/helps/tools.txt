@@ -1,0 +1,9 @@
+This is the tools help message :
+
+list of tools commands :
+
+    -`/suggest <suggestion>` (suggest a new feature for the bot)
+
+    -`/github` (send the GitHub repository link)
+
+    -`/chatinfo` (send the current chat ID)

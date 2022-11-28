@@ -6,10 +6,15 @@ const https = require('https');
 
 const { addToLogs } = require('./botTools');
 
+const blockedChannels = [ -1001845876532 ];
+
 function rtag(query, ctx, bot) {
-    //
-    //Search for a tag on r34
-    //
+
+    if (blockedChannels.includes(ctx.chat.id)) {
+        bot.telegram.sendMessage(ctx.chat.id, "This command is disabled in this channel", {});
+        return;
+    }
+    
     console.log("--> r34sTag query: " + query);
     addToLogs("--> r34sTag query: " + query);
     https.get("https://rule34.xxx/public/autocomplete.php?q=" + query, (resp) => {
@@ -47,6 +52,11 @@ function r34(tag, ctx, bot) {
     //
     //Search for the tag on r34 and send a random image
     //
+
+    if (blockedChannels.includes(ctx.chat.id)) {
+        bot.telegram.sendMessage(ctx.chat.id, "This command is disabled in this channel", {});
+        return;
+    }
     console.log("--> r34 query: " + tag);
     addToLogs("--> r34 query: " + tag);
     https.get('https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&tags=' + tag, (resp) => {

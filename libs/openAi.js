@@ -13,10 +13,14 @@ function generateImage(query, ctx, bot) {
     n: 1,
     size: "1024x1024",
     response_format : 'url'
-  })
+  }).catch((err) => {
+    console.log(err);
+    addToLogs("--> error : " + err);
+    bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+  });
 
-  console.log("--> generating image for the querry" + query);
-  addToLogs("--> generating image for the querry" + query)
+  console.log("--> generating image for the querry " + query);
+  addToLogs("--> generating image for the querry " + query)
   bot.telegram.sendMessage(ctx.chat.id, "Generating the image.", {});
 
   image.then((res) => {

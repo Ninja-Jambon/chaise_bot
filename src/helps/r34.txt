@@ -1,0 +1,9 @@
+This is the rule34 help message :
+
+list of rule34 commands :
+
+    -`/rtag <query>` (search for a tag on rule34 site)
+
+    -`/r34 <tag>` (send a random rule34 image of your tag)
+
+ps: only use these commands in private messages

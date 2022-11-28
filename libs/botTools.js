@@ -60,4 +60,22 @@ function addToLogs(message) {
     });
 }
 
-module.exports = { addToLogs, isTrue, image_search };
+function getHelp(commandName, ctx, bot) {
+    const commands = [ 'images', 'games', 'r34', 'openai', 'tools' ];
+    const commandsPaths = { 'images': './src/helps/images.txt', 'games': './src/helps/games.txt', 'r34': './src/helps/r34.txt', 'openai': './src/helps/openAI.txt', 'tools': './src/helps/tools.txt' };
+
+    if (commands.includes(commandName)) {
+        fs.readFile(commandsPaths[commandName], 'utf8', (err, data) => {
+            if (err) {
+                console.log(err);
+                bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+            } else {
+                bot.telegram.sendMessage(ctx.chat.id, data, {parse_mode: 'Markdown'});
+            }
+        });
+    } else {
+        bot.telegram.sendMessage(ctx.chat.id, "This command doesn't exist", {});
+    }
+}
+
+module.exports = { addToLogs, isTrue, image_search, getHelp };

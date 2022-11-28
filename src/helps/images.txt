@@ -1,0 +1,5 @@
+This is the images help message :
+
+list of images commands :
+
+    -`/s <query>` (send a random image of google for your query)
