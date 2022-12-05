@@ -7,7 +7,7 @@ const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, image_search, getHelp } = require('./libs/botTools');
 const { rockPaperScissorsAgainstBot } = require('./libs/games');
-const { generateImage } = require('./libs/openAi');
+const { generateImage, answerQuestion } = require('./libs/openAi');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -86,6 +86,10 @@ bot.command('rps', ctx => {
 
 bot.command('g', ctx => {
     generateImage(ctx.message.text.slice(+3), ctx, bot)
+})
+
+bot.command('q', ctx => {
+    answerQuestion(ctx.message.text.slice(+3), ctx, bot)
 })
 
 //bot launch
