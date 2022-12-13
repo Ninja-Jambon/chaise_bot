@@ -34,12 +34,6 @@ bot.command('help', ctx => {
     }
 })
 
-bot.command('anime', ctx => {
-    bot.telegram.sendMessage(ctx.chat.id, 'List of anime :\nKonosuba 1 : \nhttps://mega.nz/folder/M4gFRYbT#jiHwPRtkf7YyN6-MoguQcw\nKonosuba 2 :\nhttps://mega.nz/folder/JgZgiZbS#S0J1SoUd_TFKKun6SSJgmQ', {})
-    console.log('--> sent anime list')
-    addToLogs('--> sent anime list')
-})
-
 bot.command('github', ctx => {
     bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
     console.log('--> sent github link')
