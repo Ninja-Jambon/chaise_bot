@@ -19,6 +19,8 @@ function image_search(query, ctx, bot) {
         });
         console.log("--> sent the image for the query: " + query);
         addToLogs("--> sent the image for the query: " + query);
+    }).catch(err => {
+        console.log(err)
     })
 }
 

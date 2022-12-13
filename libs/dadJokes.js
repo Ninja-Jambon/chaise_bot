@@ -15,8 +15,12 @@ function getJoke(ctx, bot) {
         if (error) throw new Error(error);
 
         res = JSON.parse(body)
+        
         bot.telegram.sendMessage(ctx.chat.id, res.body[0].setup, {});
+
+        setTimeout(() => {
         bot.telegram.sendMessage(ctx.chat.id, res.body[0].punchline, {});
+        }, 500);
     });
 }
 

@@ -92,5 +92,9 @@ bot.command('q', ctx => {
     answerQuestion(ctx.message.text.slice(+3), ctx, bot)
 })
 
+bot.command('sb' , ctx => {
+    bot.telegram.sendAudio(ctx.chat.id, "./src/audio/Spider-Bigard.mp3", {})
+})
+
 //bot launch
 bot.launch();
