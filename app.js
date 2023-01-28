@@ -91,4 +91,4 @@ bot.command('sb' , ctx => {
 })
 
 //bot launch
-bot.launch();
+bot.launch()
