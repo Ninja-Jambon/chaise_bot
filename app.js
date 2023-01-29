@@ -1,6 +1,7 @@
 //Importing libs
 const { Telegraf } = require('telegraf');
 const fs = require('fs');
+const discord = require('discord.js');
 
 //Importing other files
 const { getJoke } = require('./libs/dadJokes');
@@ -12,7 +13,18 @@ const { generateImage, answerQuestion } = require('./libs/openAi');
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 
-//bot commands
+const client = new discord.Client({
+	intents: [
+		discord.GatewayIntentBits.Guilds,
+		discord.GatewayIntentBits.GuildMessages,
+		discord.GatewayIntentBits.MessageContent,
+		discord.GatewayIntentBits.GuildMembers,
+	],
+});
+
+client.login(process.env.DISCORD);
+
+//Telegram commands
 bot.command('start', ctx => {
     bot.telegram.sendMessage(ctx.chat.id, 'hello there! Welcome to my new telegram bot.\nType /help for help.', {})
     console.log("--> sent the start message to " + ctx.message.from.username);
@@ -89,6 +101,16 @@ bot.command('q', ctx => {
 bot.command('sb' , ctx => {
     bot.telegram.sendAudio(ctx.chat.id, "./src/audio/Spider-Bigard.mp3", {})
 })
+
+//Discord commands
+
+client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('message', msg => {
+    console.log(msg);
+});
 
 //bot launch
 bot.launch()
