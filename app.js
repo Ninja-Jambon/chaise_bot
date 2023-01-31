@@ -13,16 +13,7 @@ const { generateImage, answerQuestion } = require('./libs/openAi');
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 
-const client = new discord.Client({
-	intents: [
-		discord.GatewayIntentBits.Guilds,
-		discord.GatewayIntentBits.GuildMessages,
-		discord.GatewayIntentBits.MessageContent,
-		discord.GatewayIntentBits.GuildMembers,
-	],
-});
-
-client.login(process.env.DISCORD);
+const client = new discord.Client({intents: 3276799});
 
 //Telegram commands
 bot.command('start', ctx => {
@@ -108,9 +99,14 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', msg => {
-    console.log(msg);
+client.on('messageCreate', msg => {
+    console.log(msg.content);
+    if (msg.content === 'ping') {
+        msg.reply('Pong!');
+    }
 });
 
 //bot launch
 bot.launch()
+
+client.login(process.env.DISCORD);
