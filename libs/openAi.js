@@ -33,8 +33,8 @@ function generateImage(query, ctx, bot) {
   })
 }
 
-function answerQuestion(query, ctx, bot) {
-  response = openai.createCompletion({
+async function answerQuestion(query) {
+  response = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: query,
     max_tokens: 500,
@@ -42,19 +42,8 @@ function answerQuestion(query, ctx, bot) {
   }).catch((err) => {
     console.log(err);
   })
-
-  console.log("--> answering the question " + query);
-  addToLogs("--> answering the question " + query)
-  bot.telegram.sendMessage(ctx.chat.id, "Generating the answer.", {});
   
-  response.then((res) => {
-    const text = res.data.choices[0].text.slice(+2);
-
-    bot.telegram.sendMessage(ctx.chat.id, text, {}).catch((err) => {
-      bot.telegram.sendMessage(ctx.chat.id, "Something went wrong.", {});
-      console.log("--> error while sending the answer : " + err);
-    })
-  })
+  return response;
 }
 
 module.exports = { generateImage, answerQuestion };

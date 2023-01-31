@@ -85,8 +85,20 @@ bot.command('g', ctx => {
     generateImage(ctx.message.text.slice(+3), ctx, bot)
 })
 
-bot.command('q', ctx => {
-    answerQuestion(ctx.message.text.slice(+3), ctx, bot)
+bot.command('q', async ctx => {
+    answerQuestion(ctx.message.text.slice(+3), ctx, bot).then((res) => {
+        console.log('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
+        addToLogs('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
+        bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].text.slice(+2), {});
+    }).catch((err) => {
+        console.log(err);
+        addToLogs(err);
+        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+    })
+
+    console.log('[Telegram] Generating answer to : ' + ctx.message.text.slice(+3));
+    addToLogs('[Telegram] Generating answer to : ' + ctx.message.text.slice(+3));
+    bot.telegram.sendMessage(ctx.chat.id, 'Generating the answer...', {});
 })
 
 bot.command('sb' , ctx => {
@@ -99,10 +111,21 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('messageCreate', msg => {
-    console.log(msg.content);
-    if (msg.content === 'ping') {
-        msg.reply('Pong!');
+client.on('messageCreate', async msg => {
+    if (msg.content.startsWith('/q')) {
+        answerQuestion(msg.content.slice(+3)).then((res) => {
+            console.log('[Discord] Sent answer to : ' + msg.content.slice(+3));
+            addToLogs('[Discord] Sent answer to : ' + msg.content.slice(+3));
+            msg.reply(res.data.choices[0].text.slice(+2));
+        }).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+            msg.reply("Something went wrong");
+        })
+
+        console.log('[Discord] Generating answer to : ' + msg.content.slice(+3));
+        addToLogs('[Discord] Generating answer to : ' + msg.content.slice(+3));
+        msg.reply('Generating the answer...');
     }
 });
 
