@@ -122,7 +122,13 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', async msg => {
-    if (msg.content.startsWith('/q')) {
+    if (msg.content.startsWith('/github')) {
+        console.log('[Discord] Sent github link')
+        addToLogs('[Discord] Sent github link')
+        msg.reply('Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot')
+    }
+    
+    else if (msg.content.startsWith('/q')) {
         answerQuestion(msg.content.slice(+3)).then((res) => {
             console.log('[Discord] Sent answer to : ' + msg.content.slice(+3));
             addToLogs('[Discord] Sent answer to : ' + msg.content.slice(+3));
@@ -138,7 +144,7 @@ client.on('messageCreate', async msg => {
         msg.reply('Generating the answer...');
     }
 
-    if (msg.content.startsWith('/g')) {
+    else if (msg.content.startsWith('/g')) {
         generateImage(msg.content.slice(+3)).then((res) => {
             console.log('[Discord] Sent image to : ' + msg.content.slice(+3));
             addToLogs('[Discord] Sent image to : ' + msg.content.slice(+3));
@@ -152,12 +158,6 @@ client.on('messageCreate', async msg => {
         console.log('[Discord] Generating image to : ' + msg.content.slice(+3));
         addToLogs('[Discord] Generating image to : ' + msg.content.slice(+3));
         msg.reply('Generating the image...');
-    }
-
-    else if (msg.content.startsWith('/github')) {
-        console.log('[Discord] Sent github link')
-        addToLogs('[Discord] Sent github link')
-        msg.reply('Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot')
     }
 });
 
