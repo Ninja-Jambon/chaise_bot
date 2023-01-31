@@ -12,7 +12,6 @@ const { generateImage, answerQuestion } = require('./libs/openAi');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
-
 const client = new discord.Client({intents: 3276799});
 
 //Telegram commands
@@ -82,11 +81,23 @@ bot.command('rps', ctx => {
 })
 
 bot.command('g', ctx => {
-    generateImage(ctx.message.text.slice(+3), ctx, bot)
+    generateImage(ctx.message.text.slice(+3)).then((res) => {
+        console.log('[Telegram] Sent image to : ' + ctx.message.text.slice(+3));
+        addToLogs('[Telegram] Sent image to : ' + ctx.message.text.slice(+3));
+        bot.telegram.sendPhoto(ctx.chat.id, res.data.data[0].url, {});
+    }).catch((err) => {
+        console.log(err);
+        addToLogs(err);
+        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+    })
+
+    console.log('[Telegram] Generating image to : ' + ctx.message.text.slice(+3));
+    addToLogs('[Telegram] Generating image to : ' + ctx.message.text.slice(+3));
+    bot.telegram.sendMessage(ctx.chat.id, "Generating image...", {});
 })
 
 bot.command('q', async ctx => {
-    answerQuestion(ctx.message.text.slice(+3), ctx, bot).then((res) => {
+    answerQuestion(ctx.message.text.slice(+3)).then((res) => {
         console.log('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
         addToLogs('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
         bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].text.slice(+2), {});
@@ -106,9 +117,8 @@ bot.command('sb' , ctx => {
 })
 
 //Discord commands
-
 client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
+    console.log(`[Discord] Logged in as ${client.user.tag} !`);
 });
 
 client.on('messageCreate', async msg => {
@@ -127,9 +137,30 @@ client.on('messageCreate', async msg => {
         addToLogs('[Discord] Generating answer to : ' + msg.content.slice(+3));
         msg.reply('Generating the answer...');
     }
+
+    if (msg.content.startsWith('/g')) {
+        generateImage(msg.content.slice(+3)).then((res) => {
+            console.log('[Discord] Sent image to : ' + msg.content.slice(+3));
+            addToLogs('[Discord] Sent image to : ' + msg.content.slice(+3));
+            msg.channel.send(res.data.data[0].url);
+        }).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+            msg.reply("Something went wrong");
+        })
+
+        console.log('[Discord] Generating image to : ' + msg.content.slice(+3));
+        addToLogs('[Discord] Generating image to : ' + msg.content.slice(+3));
+        msg.reply('Generating the image...');
+    }
+
+    else if (msg.content.startsWith('/github')) {
+        console.log('[Discord] Sent github link')
+        addToLogs('[Discord] Sent github link')
+        msg.reply('Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot')
+    }
 });
 
 //bot launch
 bot.launch()
-
 client.login(process.env.DISCORD);

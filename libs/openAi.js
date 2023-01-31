@@ -1,5 +1,4 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { addToLogs } = require('./botTools');
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI,
@@ -7,8 +6,8 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-function generateImage(query, ctx, bot) {
-  const image = openai.createImage({
+async function generateImage(query, ctx, bot) {
+  const image = await openai.createImage({
     prompt: query,
     n: 1,
     size: "1024x1024",
@@ -18,19 +17,10 @@ function generateImage(query, ctx, bot) {
     addToLogs("--> error : " + err);
     bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
   });
+    
+  return image;
 
-  console.log("--> generating image for the querry " + query);
-  addToLogs("--> generating image for the querry " + query)
-  bot.telegram.sendMessage(ctx.chat.id, "Generating the image.", {});
-
-  image.then((res) => {
-    url = res.data.data[0].url
-
-    bot.telegram.sendPhoto(ctx.chat.id, url, {"caption": "This is a generated image for the querry : " + query}).catch((err) => {
-      bot.telegram.sendMessage(ctx.chat.id, "Something went wrong.", {});
-      console.log("--> error while sending the image : " + err);
-    })
-  })
+  //image link : image.data[0].url
 }
 
 async function answerQuestion(query) {
