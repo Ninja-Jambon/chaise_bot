@@ -15,7 +15,6 @@ async function generateImage(query, ctx, bot) {
   }).catch((err) => {
     console.log(err);
     addToLogs("--> error : " + err);
-    bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
   });
     
   return image;
@@ -31,6 +30,7 @@ async function answerQuestion(query) {
     temperature: 0.9,
   }).catch((err) => {
     console.log(err);
+    addToLogs("--> error : " + err);
   })
   
   return response;
