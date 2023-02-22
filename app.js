@@ -132,7 +132,7 @@ client.on('messageCreate', async msg => {
         answerQuestion(msg.content.slice(+3)).then((res) => {
             console.log('[Discord] Sent answer to : ' + msg.content.slice(+3));
             addToLogs('[Discord] Sent answer to : ' + msg.content.slice(+3));
-            msg.reply(res.data.choices[0].text.slice(+2));
+            msg.reply(res.data.choices[0].text);
         }).catch((err) => {
             console.log(err);
             addToLogs(err);
