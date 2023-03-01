@@ -24,7 +24,8 @@ async function generateImage(query, ctx, bot) {
 
 async function answerQuestion(query) {
   response = await openai.createCompletion({
-    model: "text-davinci-003",
+    //model: "text-davinci-003",
+    model: "gpt-3.5-turbo",
     prompt: query,
     max_tokens: 500,
     temperature: 0.9,
