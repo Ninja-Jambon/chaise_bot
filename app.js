@@ -2,6 +2,7 @@
 const { Telegraf } = require('telegraf');
 const fs = require('fs');
 const discord = require('discord.js');
+const mysql = require('mysql');
 
 //Importing other files
 const { getJoke } = require('./libs/dadJokes');
@@ -13,6 +14,36 @@ const { generateImage, answerQuestion } = require('./libs/openAi');
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 const client = new discord.Client({intents: 3276799});
+
+//mysql connection
+const connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: process.env.MYSQL,
+    database: "discord"
+  });
+
+//mysql functions
+function addUserToDb(id, user) {
+    connection.query('INSERT INTO users(userid, username) VALUES("' + id + '","' + user + '")' , (error, results, fields) => {
+        if (error) {
+            console.error('Erreur dans la requête : ', error);
+        } else {
+            console.log('Les résultats de la requête : ', results);
+        }
+    });
+
+}
+
+function incrementQuota(id) {
+    connection.query('UPDATE users SET quota = quota + 1 WHERE userid = ' + id, (error, results, fields) => {
+        if (error) {
+            console.error('Erreur dans la requête : ', error);
+        } else {
+            console.log('Les résultats de la requête : ', results);
+        }
+    });
+}
 
 //Telegram commands
 bot.command('start', ctx => {
@@ -154,34 +185,65 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
     if (interaction.commandName === 'gptrequest') {
-        interaction.deferReply();
+        await interaction.deferReply();
 
-        answerQuestion(interaction.options.get('question').value).then((res) => {
-            if (res.data.choices[0].message.content.length > 4096) {
-                interaction.reply(res.data.choices[0].message.content.lenght);
-                addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
-                console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+        connection.query('SELECT userid FROM users', (error, results, fields) => {
+            if (error) {
+                console.error('Erreur dans la requête : ', error);
+            } else {
+                var users = [];
+
+                results.forEach(element => {
+                    users.push(element.userid);
+                });
+
+                if (!(users.includes(interaction.member.user.id))) {
+                    addUserToDb(interaction.member.user.id, interaction.member.user.username)
+                    addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
+                    console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
+                }
             }
-            else{
-                const embed = new discord.EmbedBuilder()
-                    .setColor(0xFABBDE)
-                    .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
-                    .setTitle("Question : " + interaction.options.get('question').value)
-                    .setDescription(res.data.choices[0].message.content)
-                    .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+        });
 
-                console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
-                addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
-                interaction.editReply({ embeds : [embed] });
+        connection.query('SELECT quota FROM users WHERE userid = '+ interaction.member.user.id, (error, results, fields) => {
+            if (error) {
+                console.error('Erreur dans la requête : ', error);
+            } else {
+                if (results[0].quota >= 999) {
+                    interaction.editReply('Quota exceeded, please wait');
+                }
+                else {
+                    incrementQuota(interaction.member.user.id);
+
+                    answerQuestion(interaction.options.get('question').value).then((res) => {
+                        if (res.data.choices[0].message.content.length > 4096) {
+                            interaction.editReply(res.data.choices[0].message.content.lenght);
+                            addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                            console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+                        }
+                        else{
+                            const embed = new discord.EmbedBuilder()
+                                .setColor(0xFABBDE)
+                                .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                                .setTitle("Question : " + interaction.options.get('question').value)
+                                .setDescription(res.data.choices[0].message.content)
+                                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+            
+                            console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+                            addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                            interaction.editReply({ embeds : [embed] });
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                        addToLogs(err);
+                        interaction.editReply("Something went wrong");
+                    })
+            
+                    console.log('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+                    addToLogs('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+                }
             }
-        }).catch((err) => {
-            console.log(err);
-            addToLogs(err);
-            interaction.reply("Something went wrong");
-        })
-
-        console.log('[Discord] Generating answer to : ' + interaction.options.get('question').value);
-        addToLogs('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+        });
     }
 
     else if (interaction.commandName === 'info') {

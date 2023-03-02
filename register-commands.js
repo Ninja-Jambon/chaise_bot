@@ -17,6 +17,19 @@ const commands = [
     {
         name : 'info',
         description : 'utilise pas cette commande fdp',
+    },
+
+    {
+        name : 'createconv',
+        description : 'Create a new conversation',
+        options : [
+            {
+                name : 'name',
+                description : 'The name of the conversation',
+                type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+        ],
     }
 ];
 
