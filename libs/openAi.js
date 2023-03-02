@@ -32,7 +32,6 @@ async function answerQuestion(query) {
     addToLogs("--> error : " + err);
   })
   
-  console.log(response);
   return response;
 }
 

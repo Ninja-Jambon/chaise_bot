@@ -155,7 +155,12 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.commandName === 'gptrequest') {
         answerQuestion(interaction.options.get('question').value).then((res) => {
-            const embed = new discord.EmbedBuilder().setTitle("test").setDescription(res.data.choices[0].message.content);
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                .setTitle("Question : " + interaction.options.get('question').value)
+                .setDescription(res.data.choices[0].message.content)
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
             console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
             addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
@@ -168,6 +173,10 @@ client.on('interactionCreate', async interaction => {
 
         console.log('[Discord] Generating answer to : ' + interaction.options.get('question').value);
         addToLogs('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+    }
+
+    else if (interaction.commandName === 'info') {
+        console.log(interaction)
     }
 });
 

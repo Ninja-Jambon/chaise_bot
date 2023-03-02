@@ -12,6 +12,11 @@ const commands = [
                 required: true,
             },
         ],
+    },
+
+    {
+        name : 'info',
+        description : 'utilise pas cette commande fdp',
     }
 ];
 
