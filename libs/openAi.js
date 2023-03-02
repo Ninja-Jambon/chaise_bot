@@ -25,7 +25,6 @@ async function answerQuestion(query) {
   response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [{ "role" : "user", "content" : query}],
-    max_tokens: 500,
     temperature: 0.9,
   }).catch((err) => {
     console.log(err);

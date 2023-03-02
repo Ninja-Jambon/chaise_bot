@@ -154,17 +154,26 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
     if (interaction.commandName === 'gptrequest') {
-        answerQuestion(interaction.options.get('question').value).then((res) => {
-            const embed = new discord.EmbedBuilder()
-                .setColor(0xFABBDE)
-                .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
-                .setTitle("Question : " + interaction.options.get('question').value)
-                .setDescription(res.data.choices[0].message.content)
-                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+        interaction.deferReply();
 
-            console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
-            addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
-            interaction.reply({ embeds : [embed] });
+        answerQuestion(interaction.options.get('question').value).then((res) => {
+            if (res.data.choices[0].message.content.length > 4096) {
+                interaction.reply(res.data.choices[0].message.content.lenght);
+                addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+            }
+            else{
+                const embed = new discord.EmbedBuilder()
+                    .setColor(0xFABBDE)
+                    .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                    .setTitle("Question : " + interaction.options.get('question').value)
+                    .setDescription(res.data.choices[0].message.content)
+                    .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+                console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+                addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                interaction.editReply({ embeds : [embed] });
+            }
         }).catch((err) => {
             console.log(err);
             addToLogs(err);
