@@ -1,4 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
+const { addToLogs } = require("./botTools");
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI,
@@ -18,15 +19,12 @@ async function generateImage(query, ctx, bot) {
   });
     
   return image;
-
-  //image link : image.data[0].url
 }
 
 async function answerQuestion(query) {
-  response = await openai.createCompletion({
-    //model: "text-davinci-003",
+  response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    prompt: query,
+    messages: [{ "role" : "user", "content" : query}],
     max_tokens: 500,
     temperature: 0.9,
   }).catch((err) => {
@@ -34,6 +32,7 @@ async function answerQuestion(query) {
     addToLogs("--> error : " + err);
   })
   
+  console.log(response);
   return response;
 }
 

@@ -129,19 +129,7 @@ client.on('messageCreate', async msg => {
     }
     
     else if (msg.content.startsWith('/q')) {
-        answerQuestion(msg.content.slice(+3)).then((res) => {
-            console.log('[Discord] Sent answer to : ' + msg.content.slice(+3));
-            addToLogs('[Discord] Sent answer to : ' + msg.content.slice(+3));
-            msg.reply(res.data.choices[0].text);
-        }).catch((err) => {
-            console.log(err);
-            addToLogs(err);
-            msg.reply("Something went wrong");
-        })
-
-        console.log('[Discord] Generating answer to : ' + msg.content.slice(+3));
-        addToLogs('[Discord] Generating answer to : ' + msg.content.slice(+3));
-        msg.reply('Generating the answer...');
+        msg.reply("utilise la slash commande enculé")
     }
 
     else if (msg.content.startsWith('/g')) {
@@ -158,6 +146,28 @@ client.on('messageCreate', async msg => {
         console.log('[Discord] Generating image to : ' + msg.content.slice(+3));
         addToLogs('[Discord] Generating image to : ' + msg.content.slice(+3));
         msg.reply('Generating the image...');
+    }
+});
+
+
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return;
+
+    if (interaction.commandName === 'gptrequest') {
+        answerQuestion(interaction.options.get('question').value).then((res) => {
+            const embed = new discord.EmbedBuilder().setTitle("test").setDescription(res.data.choices[0].message.content);
+
+            console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+            addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+            interaction.reply({ embeds : [embed] });
+        }).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+            interaction.reply("Something went wrong");
+        })
+
+        console.log('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+        addToLogs('[Discord] Generating answer to : ' + interaction.options.get('question').value);
     }
 });
 
