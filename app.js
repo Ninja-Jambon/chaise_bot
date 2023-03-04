@@ -25,24 +25,54 @@ const connection = mysql.createConnection({
 
 //mysql functions
 function addUserToDb(id, user) {
-    connection.query('INSERT INTO users(userid, username) VALUES("' + id + '","' + user + '")' , (error, results, fields) => {
-        if (error) {
-            console.error('Erreur dans la requête : ', error);
-        } else {
-            console.log('Les résultats de la requête : ', results);
-            return true;
-        }
+    return new Promise((resolve, reject) => {
+        connection.query('INSERT INTO users(userid, username) VALUES("' + id + '","' + user + '")' , (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
     });
-
 }
 
 function incrementQuota(id) {
-    connection.query('UPDATE users SET quota = quota + 1 WHERE userid = ' + id, (error, results, fields) => {
-        if (error) {
-            console.error('Erreur dans la requête : ', error);
-        } else {
-            console.log('Les résultats de la requête : ', results);
-        }
+    return new Promise((resolve, reject) => {
+        connection.query('UPDATE users SET quota = quota + 1 WHERE userid = ' + id, (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+function usersInDb() {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT userid FROM users', (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                users = [];
+                results.forEach(element => {
+                    users.push(element.userid);
+                });
+                resolve(users);
+            }
+        });
+    });
+}
+
+function getQuota(id) {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT quota FROM users WHERE userid = ' + id, (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results[0].quota);
+            }
+        });
     });
 }
 
@@ -188,65 +218,49 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'gptrequest') {
         await interaction.deferReply();
 
-        connection.query('SELECT userid FROM users', (error, results, fields) => {
-            if (error) {
-                console.error('Erreur dans la requête : ', error);
-            } else {
-                var users = [];
+        users = await usersInDb();
 
-                results.forEach(element => {
-                    users.push(element.userid);
-                });
+        if (!(users.includes(interaction.member.user.id))) {
+            addUserToDb(interaction.member.user.id, interaction.member.user.username);
+            addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
+            console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
+        }
 
-                if (!(users.includes(interaction.member.user.id))) {
-                    addUserToDb(interaction.member.user.id, interaction.member.user.username);
-                    addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
-                    console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
-                }
-            }
-        });
-        
-        setTimeout(() => {
-            connection.query('SELECT quota FROM users WHERE userid = '+ interaction.member.user.id, (error, results, fields) => {
-                if (error) {
-                    console.error('Erreur dans la requête : ', error);
-                } else {
-                    if (results[0].quota >= 999) {
-                        interaction.editReply('Quota exceeded, please wait');
-                    }
-                    else {
-                        incrementQuota(interaction.member.user.id);
-
-                        answerQuestion(interaction.options.get('question').value).then((res) => {
-                            if (res.data.choices[0].message.content.length > 4096) {
-                                interaction.editReply(res.data.choices[0].message.content.lenght);
-                                addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
-                                console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
-                            }
-                            else{
-                                const embed = new discord.EmbedBuilder()
-                                    .setColor(0xFABBDE)
-                                    .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
-                                    .setTitle("Question : " + interaction.options.get('question').value)
-                                    .setDescription(res.data.choices[0].message.content)
-                                    .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+        quota = await getQuota(interaction.member.user.id);
                 
-                                console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
-                                addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
-                                interaction.editReply({ embeds : [embed] });
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                            addToLogs(err);
-                            interaction.editReply("Something went wrong");
-                        })
-                
-                        console.log('[Discord] Generating answer to : ' + interaction.options.get('question').value);
-                        addToLogs('[Discord] Generating answer to : ' + interaction.options.get('question').value);
-                    }
+        if (quota >= 999) {
+            interaction.editReply('Quota exceeded, please wait');
+        }
+        else {
+            incrementQuota(interaction.member.user.id);
+
+            answerQuestion(interaction.options.get('question').value).then((res) => {
+                if (res.data.choices[0].message.content.length > 4096) {
+                    interaction.editReply(res.data.choices[0].message.content.lenght);
+                    addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                    console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
                 }
-            });
-        }, 100);
+                else{
+                    const embed = new discord.EmbedBuilder()
+                        .setColor(0xFABBDE)
+                        .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                        .setTitle("Question : " + interaction.options.get('question').value)
+                        .setDescription(res.data.choices[0].message.content)
+                        .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+                    
+                    console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+                    addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                    interaction.editReply({ embeds : [embed] });
+                }
+            }).catch((err) => {
+                console.log(err);
+                addToLogs(err);
+                interaction.editReply("Something went wrong");
+            })
+                
+            console.log('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+            addToLogs('[Discord] Generating answer to : ' + interaction.options.get('question').value);
+        }
     }
 
     else if (interaction.commandName === 'info') {
