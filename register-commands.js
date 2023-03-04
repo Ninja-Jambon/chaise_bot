@@ -93,6 +93,10 @@ const commands = [
             },
         ],
     },
+    {
+        name : 'getmyguota',
+        description : 'Get your quota',
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);

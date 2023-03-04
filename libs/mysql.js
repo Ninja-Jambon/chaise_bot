@@ -19,9 +19,9 @@ function addUserToDb(id, user) {
     });
 }
 
-function incrementQuota(id) {
+function incrementQuota(id, value) {
     return new Promise((resolve, reject) => {
-        connection.query('UPDATE users SET quota = quota + 1 WHERE userid = ' + id, (error, results, fields) => {
+        connection.query('UPDATE users SET quota = quota + '+ value + ' WHERE userid = ' + id, (error, results, fields) => {
             if (error) {
                 reject(error);
             } else {

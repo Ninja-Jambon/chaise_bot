@@ -24,14 +24,13 @@ async function generateImage(query, ctx, bot) {
 async function answerQuestion(query) {
   response = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    messages: [{"role":"system", "content" : "You are a helpful assistant."},{ "role" : "user", "content" : "who is the president of the united states?" }, { "role" : "assistant", "content" : "Joe Biden"}],
+    messages: [{ "role" : "user", "content" : query}],
     temperature: 0.9,
   }).catch((err) => {
     console.log(err);
     addToLogs("--> error : " + err);
   })
   
-  console.log(response);
   return response;
 }
 

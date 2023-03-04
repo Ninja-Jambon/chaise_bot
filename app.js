@@ -167,13 +167,12 @@ client.on('interactionCreate', async interaction => {
 
         quota = await getQuota(interaction.member.user.id);
                 
-        if (quota >= 999) {
-            interaction.editReply('Quota exceeded, please wait');
+        if (quota >= 200000) {
+            interaction.editReply('Quota exceeded, please wait untill reset (every month)');
         }
         else {
-            incrementQuota(interaction.member.user.id);
-
             answerQuestion(interaction.options.get('question').value).then((res) => {
+                incrementQuota(interaction.member.user.id, res.data.usage.total_tokens);
                 if (res.data.choices[0].message.content.length > 4096) {
                     interaction.editReply(res.data.choices[0].message.content);
                     addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
@@ -244,28 +243,35 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'addmsg') {
         await interaction.deferReply();
-        await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username);
 
-        messages = await getMessages(interaction.options.get('name').value, "role");
+        quota = await getQuota(interaction.member.user.id);
+                
+        if (quota >= 200000) {
+            interaction.editReply('Quota exceeded, please wait untill reset (every month)');
+        } else {
+            await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username);
 
-        sendConv(messages).then((res) => {
-            addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content , "Chaise bot");
+            messages = await getMessages(interaction.options.get('name').value, "role");
 
-            const embed_user = new discord.EmbedBuilder()
-                .setColor(0xBBFAF4)
-                .setAuthor({ name : interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
-                .setDescription(interaction.options.get('message').value);
+            sendConv(messages).then((res) => {
+                addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content , "Chaise bot");
 
-            const embed_bot = new discord.EmbedBuilder()
-                .setColor(0xFABBDE)
-                .setAuthor({ name : "Chaise bot", iconURL : client.user.displayAvatarURL()})
-                .setDescription(res.data.choices[0].message.content)
-                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+                const embed_user = new discord.EmbedBuilder()
+                    .setColor(0xBBFAF4)
+                    .setAuthor({ name : interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                    .setDescription(interaction.options.get('message').value);
 
-            interaction.editReply({ embeds : [embed_user, embed_bot] });
-        }).catch((err) => {
-            console.log(err);
-        });
+                const embed_bot = new discord.EmbedBuilder()
+                    .setColor(0xFABBDE)
+                    .setAuthor({ name : "Chaise bot", iconURL : client.user.displayAvatarURL()})
+                    .setDescription(res.data.choices[0].message.content)
+                    .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+                interaction.editReply({ embeds : [embed_user, embed_bot] });
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
     }
 
     else if (interaction.commandName === 'displayconv') {
@@ -285,6 +291,19 @@ client.on('interactionCreate', async interaction => {
             .setColor(0xFABBDE)
             .setAuthor({ name : "Conversation : " + interaction.options.get('name').value, iconURL : client.user.displayAvatarURL()})
             .setDescription(embed_text)
+            .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+        interaction.editReply({ embeds : [embed] });
+    }
+
+    else if (interaction.commandName === 'getmyguota') {
+        await interaction.deferReply();
+        quota = await getQuota(interaction.member.user.id);
+
+        const embed = new discord.EmbedBuilder()
+            .setColor(0xFABBDE)
+            .setAuthor({ name : "Quota : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+            .setDescription("You have a quota of " + quota + "/200k tokens")
             .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
         interaction.editReply({ embeds : [embed] });
