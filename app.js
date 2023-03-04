@@ -8,8 +8,8 @@ const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, image_search, getHelp } = require('./libs/botTools');
 const { rockPaperScissorsAgainstBot } = require('./libs/games');
-const { generateImage, answerQuestion } = require('./libs/openAi');
-const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs } = require('./libs/mysql');
+const { generateImage, answerQuestion, sendConv } = require('./libs/openAi');
+const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages } = require('./libs/mysql');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -207,11 +207,13 @@ client.on('interactionCreate', async interaction => {
     }
 
     else if (interaction.commandName === 'addconv') {
-        if (!interaction.options.get('name').value.includes(" ")) {
-            console.log(await addConv(interaction.options.get('name').value));
-            interaction.reply('Conversation added to db');
+        await interaction.deferReply();
+        convs = await getConvs();
+        if (!interaction.options.get('name').value.includes(" ") && !convs.includes(interaction.options.get('name').value)) {
+            await addConv(interaction.options.get('name').value);
+            interaction.editReply('Conversation added to db');
         } else {
-            interaction.reply('Conversation name cannot contain spaces');
+            interaction.editReply('Verify the name of the conversation (it must not contain spaces and must be unique)');
         }
     }
 
@@ -232,6 +234,44 @@ client.on('interactionCreate', async interaction => {
         }
         
         interaction.reply(message);
+    }
+
+    else if (interaction.commandName === 'addmsg') {
+        await interaction.deferReply();
+        await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value);
+
+        messages = await getMessages(interaction.options.get('name').value);
+
+        sendConv(messages).then((res) => {
+            addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content);
+
+            const embed_user = new discord.EmbedBuilder()
+                .setColor(0xBBFAF4)
+                .setAuthor({ name : interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                .setTitle(interaction.options.get('message').value);
+
+            const embed_bot = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Chaise bot", iconURL : client.user.displayAvatarURL()})
+                .setTitle(res.data.choices[0].message.content)
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed_user, embed_bot] });
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    else if (interaction.commandName === 'displayconv') {
+        await interaction.deferReply();
+        messages = await getMessages(interaction.options.get('name').value);
+        message = "";
+
+        messages.forEach(element => {
+            message += element.role + " : " + element.content + "\n";
+        });
+
+        interaction.editReply(message);
     }
 });
 

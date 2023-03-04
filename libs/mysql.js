@@ -65,11 +65,11 @@ function addConv (convName) {
             if (error) {
                 reject(error);
             } else {
-                connection.query('CREATE TABLE ' + convName + '(id int NOT NULL AUTO_INCREMENT, author varchar(20) NOT NULL, message text, PRIMARY KEY (id))', (error, results, fields) => {
+                connection.query('CREATE TABLE ' + convName + '(id int NOT NULL AUTO_INCREMENT, author varchar(20) NOT NULL, message text, PRIMARY KEY (id))', async (error, results, fields) => {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(results);
+                        resolve(addMessage(convName, 'system', 'You are a helpful assistant.'));
                     }
                 });
             }
@@ -111,4 +111,34 @@ function getConvs() {
     });
 }
 
-module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs };
+function addMessage(convName, author, message) {
+    return new Promise((resolve, reject) => {
+        connection.query('INSERT INTO ' + convName + ' (author, message) VALUES ("' + author + '"'+', "' + message + '")', (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+function getMessages (convName) {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT author, message FROM ' + convName, (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                messages = [];
+
+                results.forEach(element => {
+                    messages.push({"role" : element.author, "content" : element.message});
+                });
+
+                resolve(messages);
+            }
+        });
+    });
+}
+
+module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages };

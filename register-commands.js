@@ -62,6 +62,37 @@ const commands = [
         name : 'listconvs',
         description : 'List all the conversations in the database',
     },
+
+    {
+        name : 'addmsg',
+        description : 'Add a message to a conversation',
+        options : [
+            {
+                name : 'name',
+                description : 'The name of the conversation',
+                type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+            {
+                name : 'message',
+                description : 'The message to add to the conversation',
+                type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+        ],
+    },
+    {
+        name : 'displayconv',
+        description : 'Display a conversation',
+        options : [
+            {
+                name : 'name',
+                description : 'The name of the conversation',
+                type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+        ],
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);
