@@ -30,7 +30,33 @@ const commands = [
                 required : true,
             },
         ],
-    }
+    },
+
+    {
+        name : 'addconv',
+        description : 'Add a conversation to the database',
+        options : [
+            {
+                name : 'name',
+                description : 'The name of the conversation',
+                type : ApplicationCommandOptionType.String,
+                required : true,    
+            },
+        ],
+    },
+
+    {
+        name : 'delconv',
+        description : 'Delete a conversation from the database',
+        options : [
+            {
+                name : 'name',
+                description : 'The name of the conversation',
+                type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+        ],
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);

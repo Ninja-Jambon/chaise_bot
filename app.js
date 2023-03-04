@@ -1,8 +1,7 @@
 //Importing libs
 const { Telegraf } = require('telegraf');
-const fs = require('fs');
 const discord = require('discord.js');
-const mysql = require('mysql');
+const fs = require('fs');
 
 //Importing other files
 const { getJoke } = require('./libs/dadJokes');
@@ -10,71 +9,11 @@ const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, image_search, getHelp } = require('./libs/botTools');
 const { rockPaperScissorsAgainstBot } = require('./libs/games');
 const { generateImage, answerQuestion } = require('./libs/openAi');
+const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv } = require('./libs/mysql');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
 const client = new discord.Client({intents: 3276799});
-
-//mysql connection
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: process.env.MYSQL,
-    database: "discord"
-  });
-
-//mysql functions
-function addUserToDb(id, user) {
-    return new Promise((resolve, reject) => {
-        connection.query('INSERT INTO users(userid, username) VALUES("' + id + '","' + user + '")' , (error, results, fields) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-        });
-    });
-}
-
-function incrementQuota(id) {
-    return new Promise((resolve, reject) => {
-        connection.query('UPDATE users SET quota = quota + 1 WHERE userid = ' + id, (error, results, fields) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-        });
-    });
-}
-
-function usersInDb() {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT userid FROM users', (error, results, fields) => {
-            if (error) {
-                reject(error);
-            } else {
-                users = [];
-                results.forEach(element => {
-                    users.push(element.userid);
-                });
-                resolve(users);
-            }
-        });
-    });
-}
-
-function getQuota(id) {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT quota FROM users WHERE userid = ' + id, (error, results, fields) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(results[0].quota);
-            }
-        });
-    });
-}
 
 //Telegram commands
 bot.command('start', ctx => {
@@ -162,7 +101,7 @@ bot.command('q', async ctx => {
     answerQuestion(ctx.message.text.slice(+3)).then((res) => {
         console.log('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
         addToLogs('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
-        bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].text.slice(+2), {});
+        bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].message.content, {});
     }).catch((err) => {
         console.log(err);
         addToLogs(err);
@@ -221,7 +160,7 @@ client.on('interactionCreate', async interaction => {
         users = await usersInDb();
 
         if (!(users.includes(interaction.member.user.id))) {
-            addUserToDb(interaction.member.user.id, interaction.member.user.username);
+            await addUserToDb(interaction.member.user.id, interaction.member.user.username);
             addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
             console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
         }
@@ -236,7 +175,7 @@ client.on('interactionCreate', async interaction => {
 
             answerQuestion(interaction.options.get('question').value).then((res) => {
                 if (res.data.choices[0].message.content.length > 4096) {
-                    interaction.editReply(res.data.choices[0].message.content.lenght);
+                    interaction.editReply(res.data.choices[0].message.content);
                     addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
                     console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
                 }
@@ -265,6 +204,16 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'info') {
         console.log(interaction)
+    }
+
+    else if (interaction.commandName === 'addconv') {
+        console.log(await addConv(interaction.options.get('name').value));
+        interaction.reply('Conversation added to db');
+    }
+
+    else if (interaction.commandName === 'delconv') {
+        console.log(await delConv(interaction.options.get('name').value));
+        interaction.reply('Conversation deleted from db');
     }
 });
 
