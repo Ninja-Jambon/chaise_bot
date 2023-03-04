@@ -168,7 +168,13 @@ client.on('interactionCreate', async interaction => {
         quota = await getQuota(interaction.member.user.id);
                 
         if (quota >= 200000) {
-            interaction.editReply('Quota exceeded, please wait untill reset (every month)');
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Quota exceeded", iconURL : client.user.displayAvatarURL()})
+                .setDescription("You have a quota of " + quota + " tokens, please wait until reset (every months)")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed] });
         }
         else {
             answerQuestion(interaction.options.get('question').value).then((res) => {
@@ -244,10 +250,24 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'addmsg') {
         await interaction.deferReply();
 
+        users = await usersInDb();
+
+        if (!(users.includes(interaction.member.user.id))) {
+            await addUserToDb(interaction.member.user.id, interaction.member.user.username);
+            addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
+            console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
+        }
+
         quota = await getQuota(interaction.member.user.id);
                 
         if (quota >= 200000) {
-            interaction.editReply('Quota exceeded, please wait untill reset (every month)');
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Quota exceeded", iconURL : client.user.displayAvatarURL()})
+                .setDescription("Quota exceeded, please wait untill reset (every month)")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed] });
         } else {
             await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username);
 
