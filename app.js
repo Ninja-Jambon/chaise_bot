@@ -229,11 +229,17 @@ client.on('interactionCreate', async interaction => {
             message = "No conversations in the database";
         } else {
             convs.forEach(element => {
-                message += element + "\n";
+                message += "- **" + element + "**\n\n";
             });
         }
+
+        const embed = new discord.EmbedBuilder()
+            .setColor(0xFABBDE)
+            .setAuthor({ name : "Conversations list", iconURL : client.user.displayAvatarURL()})
+            .setDescription(message)
+            .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
         
-        interaction.reply(message);
+        interaction.reply({ embeds : [embed] });
     }
 
     else if (interaction.commandName === 'addmsg') {
@@ -265,14 +271,14 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'displayconv') {
         await interaction.deferReply();
         messages = await getMessages(interaction.options.get('name').value, "user");
-        embeds = [];
 
         embed_text = "";
 
         messages.forEach(element => {
             if (element.user == "System") {}
             else {
-                embed_text += "**" + element.user + "** : " + element.content + "\n";}
+                embed_text += "**" + element.user + "** : " + element.content + "\n\n";
+            }
         });
 
         const embed = new discord.EmbedBuilder()
