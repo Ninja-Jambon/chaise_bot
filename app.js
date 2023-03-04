@@ -43,10 +43,6 @@ bot.command('github', ctx => {
     addToLogs('--> sent github link')
 })
 
-bot.command('s', ctx => {
-    image_search(ctx.message.text.slice(+3), ctx, bot)
-})
-
 bot.command('truce', ctx => {
     isTrue(ctx.update.message.reply_to_message.text, ctx, bot)
 })
@@ -77,10 +73,6 @@ bot.command('dadjoke', ctx => {
     console.log('--> sent a dad joke')
 })
 
-bot.command('rps', ctx => {
-    rockPaperScissorsAgainstBot(ctx.message.text.slice(+5), ctx, bot)
-})
-
 bot.command('g', ctx => {
     generateImage(ctx.message.text.slice(+3)).then((res) => {
         console.log('[Telegram] Sent image to : ' + ctx.message.text.slice(+3));
@@ -98,23 +90,132 @@ bot.command('g', ctx => {
 })
 
 bot.command('q', async ctx => {
-    answerQuestion(ctx.message.text.slice(+3)).then((res) => {
-        console.log('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
-        addToLogs('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
-        bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].message.content, {});
-    }).catch((err) => {
-        console.log(err);
-        addToLogs(err);
-        bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
-    })
+    users = await usersInDb();
 
-    console.log('[Telegram] Generating answer to : ' + ctx.message.text.slice(+3));
-    addToLogs('[Telegram] Generating answer to : ' + ctx.message.text.slice(+3));
-    bot.telegram.sendMessage(ctx.chat.id, 'Generating the answer...', {});
+    if (!users.includes(ctx.message.from.id.toString())) {
+        await addUserToDb(ctx.message.from.id, ctx.message.from.username);
+        addToLogs('[Telegram] Added user ' + ctx.message.from.username + ' to the database');
+        console.log('[Telegram] Added user ' + ctx.message.from.username + ' to the database');
+    }
+
+    quota = await getQuota(ctx.message.from.id);
+
+    if (quota >= 200000) {
+        bot.telegram.sendMessage(ctx.chat.id, "You have reached your quota, please wait untill it reset (every months).", {});
+    } else {
+        answerQuestion(ctx.message.text.slice(+3)).then((res) => {
+            incrementQuota(ctx.message.from.id, res.data.usage.total_tokens);
+            console.log('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
+            addToLogs('[Telegram] Sent answer to : ' + ctx.message.text.slice(+3));
+            bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].message.content, {});
+        }).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+            bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
+        })
+
+        console.log('[Telegram] Generating answer to : ' + ctx.message.text.slice(+3));
+        addToLogs('[Telegram] Generating answer to : ' + ctx.message.text.slice(+3));
+        bot.telegram.sendMessage(ctx.chat.id, 'Generating the answer...', {});
+    }
 })
 
-bot.command('sb' , ctx => {
-    bot.telegram.sendAudio(ctx.chat.id, "./src/audio/Spider-Bigard.mp3", {})
+bot.command('quota', async ctx => {
+    users = await usersInDb();
+    
+    if (!users.includes(ctx.message.from.id.toString())) {
+        await addUserToDb(ctx.message.from.id, ctx.message.from.username);
+        addToLogs('[Telegram] Added user ' + ctx.message.from.username + ' to the database');
+        console.log('[Telegram] Added user ' + ctx.message.from.username + ' to the database');
+    }
+
+    quota = await getQuota(ctx.message.from.id);
+
+    bot.telegram.sendMessage(ctx.chat.id, "You have " + (200000 - quota) + " tokens left.", {});
+})
+
+bot.command('lc', async ctx => {
+    convs = await getConvs();
+
+    if (convs.length == 0) {
+        bot.telegram.sendMessage(ctx.chat.id, "No conversation found.", {});
+    } else {
+        message = "Conversations : \n\n"
+
+        convs.forEach(element => {
+            message += "- " + element + "\n\n"
+        });
+
+        bot.telegram.sendMessage(ctx.chat.id, message, {});
+    }
+})
+
+bot.command('addconv', async ctx => {
+    convs = await getConvs();
+
+    if (convs.includes(ctx.message.text.slice(+9) || ctx.message.text.slice(+9) == "" || ctx.message.text.contains(" "))) {
+        bot.telegram.sendMessage(ctx.chat.id, "Verify the name of the conversation (it must not contain spaces and must be unique).", {});
+    } else {
+        await addConv(ctx.message.text.slice(+9));
+        bot.telegram.sendMessage(ctx.chat.id, "Conversation added.", {});
+    }
+})
+
+bot.command('delconv', async ctx => {
+    convs = await getConvs();
+
+    if (!convs.includes(ctx.message.text.slice(+9))) {
+        bot.telegram.sendMessage(ctx.chat.id, "Verify the name of the conversation.", {});
+    } else {
+        await delConv(ctx.message.text.slice(+9));
+        bot.telegram.sendMessage(ctx.chat.id, "Conversation deleted.", {});
+    }
+})
+
+bot.command('displayconv', async ctx => {
+    convs = await getConvs();
+
+    if (!convs.includes(ctx.message.text.slice(+13))) {
+        bot.telegram.sendMessage(ctx.chat.id, "Verify the name of the conversation.", {});
+    } else {
+        messages = await getMessages(ctx.message.text.slice(+13), "user");
+        
+        message = "Conversation " + ctx.message.text.slice(+13) + " :\n\n";
+
+        messages.forEach(element => {
+            if (element.user == "System") {}
+            else {
+                message += element.user + " : " + element.content + "\n\n";
+            }
+        });
+
+        if (message == "") {
+            bot.telegram.sendMessage(ctx.chat.id, "No message found.", {});
+        } else {
+            bot.telegram.sendMessage(ctx.chat.id, message, {});
+        }
+    }
+})
+
+bot.command('addmsg', async ctx => {
+    convs = await getConvs();
+
+    if (!convs.includes(ctx.message.text.slice(8, ctx.message.text.indexOf(" - ")))) {
+        bot.telegram.sendMessage(ctx.chat.id, "Verify the name of the conversation.", {});
+    } else {
+        await addMessage(ctx.message.text.slice(+8, ctx.message.text.indexOf(" - ")),"user" , ctx.message.text.slice(ctx.message.text.indexOf(" - ")+3), ctx.message.from.username);
+        
+        console.log(ctx.message.text.slice(8, ctx.message.text.indexOf(" - ")));
+
+        messages = await getMessages(ctx.message.text.slice(8, ctx.message.text.indexOf(" - ")), 'role');
+
+        sendConv(messages).then((res) => {
+            bot.telegram.sendMessage(ctx.chat.id, res.data.choices[0].message.content, {});
+        }).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+        })
+    }
 })
 
 //Discord commands
@@ -228,7 +329,7 @@ client.on('interactionCreate', async interaction => {
             const embed = new discord.EmbedBuilder()
                 .setColor(0xFABBDE)
                 .setAuthor({ name : "Error", iconURL : client.user.displayAvatarURL()})
-                .setDescription("Verify the name of the conversation (it must not contain spaces and must be unique)")
+                .setDescription("Verify the name of the conversation (it must not contain spaces and must be unique).")
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
             
             interaction.editReply({ embeds : [embed] });
@@ -350,12 +451,21 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'getmyguota') {
         await interaction.deferReply();
+
+        users = await usersInDb();
+
+        if (!(users.includes(interaction.member.user.id))) {
+            await addUserToDb(interaction.member.user.id, interaction.member.user.username);
+            addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
+            console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
+        }
+
         quota = await getQuota(interaction.member.user.id);
 
         const embed = new discord.EmbedBuilder()
             .setColor(0xFABBDE)
             .setAuthor({ name : "Quota : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
-            .setDescription("You have a quota of " + quota + "/200k tokens")
+            .setDescription("You have " + (200000 - quota) + " tokens left this month")
             .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
         interaction.editReply({ embeds : [embed] });

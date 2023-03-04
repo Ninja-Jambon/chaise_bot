@@ -2,9 +2,6 @@ const fs = require('fs');
 const google = require('googlethis');
 
 function image_search(query, ctx, bot) {
-    //
-    //Search for an image on google and send it to the user
-    //
     const images = google.image(query, { safe: false }).catch(err => {
         console.log(err);
         addToLogs("--> error : " + err);
@@ -25,9 +22,6 @@ function image_search(query, ctx, bot) {
 }
 
 function isTrue(message, ctx, bot) {
-    //
-    //Check if the message is a command
-    //
     if (message != undefined) {
         console.log("--> message received: " + message);
         addToLogs("--> message received: " + message);
@@ -52,9 +46,6 @@ function isTrue(message, ctx, bot) {
 }
 
 function addToLogs(message) {
-    //
-    //Add a message to the logs
-    //
     fs.appendFile('./logs/logs.txt', message + "\n", err => {
         if (err) {
             console.log(err);
