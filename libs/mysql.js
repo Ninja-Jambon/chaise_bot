@@ -95,4 +95,20 @@ function delConv (convName) {
     });
 }
 
-module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv };
+function getConvs() {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT name FROM conversations', (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                convs = [];
+                results.forEach(element => {
+                    convs.push(element.name);
+                });
+                resolve(convs);
+            }
+        });
+    });
+}
+
+module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs };

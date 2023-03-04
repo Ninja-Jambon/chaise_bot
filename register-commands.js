@@ -57,6 +57,11 @@ const commands = [
             },
         ],
     },
+
+    {
+        name : 'listconvs',
+        description : 'List all the conversations in the database',
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);

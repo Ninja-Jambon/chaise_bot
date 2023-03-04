@@ -9,7 +9,7 @@ const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, image_search, getHelp } = require('./libs/botTools');
 const { rockPaperScissorsAgainstBot } = require('./libs/games');
 const { generateImage, answerQuestion } = require('./libs/openAi');
-const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv } = require('./libs/mysql');
+const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs } = require('./libs/mysql');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -207,13 +207,31 @@ client.on('interactionCreate', async interaction => {
     }
 
     else if (interaction.commandName === 'addconv') {
-        console.log(await addConv(interaction.options.get('name').value));
-        interaction.reply('Conversation added to db');
+        if (!interaction.options.get('name').value.includes(" ")) {
+            console.log(await addConv(interaction.options.get('name').value));
+            interaction.reply('Conversation added to db');
+        } else {
+            interaction.reply('Conversation name cannot contain spaces');
+        }
     }
 
     else if (interaction.commandName === 'delconv') {
         console.log(await delConv(interaction.options.get('name').value));
         interaction.reply('Conversation deleted from db');
+    }
+
+    else if (interaction.commandName === 'listconvs') {
+        convs = await getConvs();
+        message = "";
+        if (convs.length == 0) {
+            message = "No conversations in the database";
+        } else {
+            convs.forEach(element => {
+                message += element + "\n";
+            });
+        }
+        
+        interaction.reply(message);
     }
 });
 
