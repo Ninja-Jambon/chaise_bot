@@ -216,15 +216,46 @@ client.on('interactionCreate', async interaction => {
         convs = await getConvs();
         if (!interaction.options.get('name').value.includes(" ") && !convs.includes(interaction.options.get('name').value)) {
             await addConv(interaction.options.get('name').value);
-            interaction.editReply('Conversation added to db');
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Conversation added", iconURL : client.user.displayAvatarURL()})
+                .setDescription("Conversation " + interaction.options.get('name').value + " added to db")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed] });
         } else {
-            interaction.editReply('Verify the name of the conversation (it must not contain spaces and must be unique)');
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Error", iconURL : client.user.displayAvatarURL()})
+                .setDescription("Verify the name of the conversation (it must not contain spaces and must be unique)")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+            
+            interaction.editReply({ embeds : [embed] });
         }
     }
 
     else if (interaction.commandName === 'delconv') {
-        console.log(await delConv(interaction.options.get('name').value));
-        interaction.reply('Conversation deleted from db');
+        await interaction.deferReply();
+
+        convs = await getConvs();
+        if (!convs.includes(interaction.options.get('name').value)) {
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Error", iconURL : client.user.displayAvatarURL()})
+                .setDescription("Conversation not found in the database")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed] });
+        } else {
+            await delConv(interaction.options.get('name').value);
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Conversation deleted", iconURL : client.user.displayAvatarURL()})
+                .setDescription("Conversation " + interaction.options.get('name').value + " deleted from the database")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed] });
+        }
     }
 
     else if (interaction.commandName === 'listconvs') {
