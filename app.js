@@ -238,22 +238,22 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'addmsg') {
         await interaction.deferReply();
-        await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value);
+        await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username);
 
-        messages = await getMessages(interaction.options.get('name').value);
+        messages = await getMessages(interaction.options.get('name').value, "role");
 
         sendConv(messages).then((res) => {
-            addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content);
+            addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content , "Chaise bot");
 
             const embed_user = new discord.EmbedBuilder()
                 .setColor(0xBBFAF4)
                 .setAuthor({ name : interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
-                .setTitle(interaction.options.get('message').value);
+                .setDescription(interaction.options.get('message').value);
 
             const embed_bot = new discord.EmbedBuilder()
                 .setColor(0xFABBDE)
                 .setAuthor({ name : "Chaise bot", iconURL : client.user.displayAvatarURL()})
-                .setTitle(res.data.choices[0].message.content)
+                .setDescription(res.data.choices[0].message.content)
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
             interaction.editReply({ embeds : [embed_user, embed_bot] });
@@ -264,14 +264,24 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'displayconv') {
         await interaction.deferReply();
-        messages = await getMessages(interaction.options.get('name').value);
-        message = "";
+        messages = await getMessages(interaction.options.get('name').value, "user");
+        embeds = [];
+
+        embed_text = "";
 
         messages.forEach(element => {
-            message += element.role + " : " + element.content + "\n";
+            if (element.user == "System") {}
+            else {
+                embed_text += "**" + element.user + "** : " + element.content + "\n";}
         });
 
-        interaction.editReply(message);
+        const embed = new discord.EmbedBuilder()
+            .setColor(0xFABBDE)
+            .setAuthor({ name : "Conversation : " + interaction.options.get('name').value, iconURL : client.user.displayAvatarURL()})
+            .setDescription(embed_text)
+            .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+        interaction.editReply({ embeds : [embed] });
     }
 });
 

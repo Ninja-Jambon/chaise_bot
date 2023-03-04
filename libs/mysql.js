@@ -65,11 +65,11 @@ function addConv (convName) {
             if (error) {
                 reject(error);
             } else {
-                connection.query('CREATE TABLE ' + convName + '(id int NOT NULL AUTO_INCREMENT, author varchar(20) NOT NULL, message text, PRIMARY KEY (id))', async (error, results, fields) => {
+                connection.query('CREATE TABLE ' + convName + '(id int NOT NULL AUTO_INCREMENT, author varchar(20) NOT NULL, message text, user varchar(20), PRIMARY KEY (id))', async (error, results, fields) => {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(addMessage(convName, 'system', 'You are a helpful assistant.'));
+                        resolve(addMessage(convName, 'system', 'You are a helpful assistant.', 'System'));
                     }
                 });
             }
@@ -111,9 +111,9 @@ function getConvs() {
     });
 }
 
-function addMessage(convName, author, message) {
+function addMessage(convName, author, message, user) {
     return new Promise((resolve, reject) => {
-        connection.query('INSERT INTO ' + convName + ' (author, message) VALUES ("' + author + '"'+', "' + message + '")', (error, results, fields) => {
+        connection.query('INSERT INTO ' + convName + ' (author, message, user) VALUES ("' + author + '"'+', "' + message + '", "' + user + '")', (error, results, fields) => {
             if (error) {
                 reject(error);
             } else {
@@ -123,17 +123,22 @@ function addMessage(convName, author, message) {
     });
 }
 
-function getMessages (convName) {
+function getMessages (convName, choice) {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT author, message FROM ' + convName, (error, results, fields) => {
+        connection.query('SELECT author, message, user FROM ' + convName, (error, results, fields) => {
             if (error) {
                 reject(error);
             } else {
                 messages = [];
-
-                results.forEach(element => {
-                    messages.push({"role" : element.author, "content" : element.message});
-                });
+                if (choice == 'role') {
+                    results.forEach(element => {
+                        messages.push({"role" : element.author, "content" : element.message});
+                    });
+                } else if (choice == 'user') {
+                    results.forEach(element => {
+                        messages.push({"user" : element.user, "content" : element.message});
+                    });
+                }
 
                 resolve(messages);
             }
