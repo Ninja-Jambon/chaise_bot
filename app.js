@@ -220,7 +220,7 @@ bot.command('addmsg', async ctx => {
 //Discord commands
 client.on('ready', () => {
     console.log(`[Discord] Logged in as ${client.user.tag} !`);
-    client.user.setPresence({ activities: [{ name: 'La belle chaise', type : 'Watching' }] });
+    client.user.setPresence({ activities: [{ name: 'la belle chaise', type : 3}] });
 });
 
 client.on('messageCreate', async msg => {
