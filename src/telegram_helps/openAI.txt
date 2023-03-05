@@ -1,0 +1,11 @@
+This is the opanAI help message :
+
+list of opanAI commands :
+
+    -`/g <query>` (generate an image with DALL-E with your query)
+    -`/q <query>` (generate an answer for your question)
+    -`/addconv <convName>` (add a new conversation to the database)
+    -`/delconv <convName>` (delete a conversation from the database)
+    -`/lc` (display all the conversations that are into the database)
+    -`/displayconv <convName>` (display a conversation)
+    -`/addmsg <convName> - <message>` (send a new message to a conversation)

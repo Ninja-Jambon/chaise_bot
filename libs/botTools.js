@@ -55,7 +55,7 @@ function addToLogs(message) {
 
 function getHelp(commandName, ctx, bot) {
     const commands = [ 'images', 'games', 'r34', 'openai', 'tools' ];
-    const commandsPaths = { 'images': './src/helps/images.txt', 'games': './src/helps/games.txt', 'r34': './src/helps/r34.txt', 'openai': './src/helps/openAI.txt', 'tools': './src/helps/tools.txt' };
+    const commandsPaths = { 'images': './src/telegram_helps/images.txt', 'games': './src/telegram_helps/games.txt', 'r34': './src/telegram_helps/r34.txt', 'openai': './src/telegram_helps/openAI.txt', 'tools': './src/telegram_helps/tools.txt' };
 
     if (commands.includes(commandName)) {
         fs.readFile(commandsPaths[commandName], 'utf8', (err, data) => {

@@ -1,6 +1,0 @@
-This is the opanAI help message :
-
-list of opanAI commands :
-
-    -`/g <query>` (generate an image with DALL-E with your query)
-    -`/q <query>` (generate an answer for your question)

@@ -6,8 +6,7 @@ const fs = require('fs');
 //Importing other files
 const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
-const { addToLogs, isTrue, image_search, getHelp } = require('./libs/botTools');
-const { rockPaperScissorsAgainstBot } = require('./libs/games');
+const { addToLogs, isTrue, getHelp } = require('./libs/botTools');
 const { generateImage, answerQuestion, sendConv } = require('./libs/openAi');
 const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages } = require('./libs/mysql');
 
@@ -26,7 +25,7 @@ bot.command('help', ctx => {
     if (ctx.message.text.slice(+6) != '') {
         getHelp(ctx.message.text.slice(+6), ctx, bot);
     } else {
-        fs.readFile('./src/helps/default.txt', 'utf8', (err, data) => {
+        fs.readFile('./src/telegram_helps/default.txt', 'utf8', (err, data) => {
             if (err) {
                 console.log(err);
                 bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
