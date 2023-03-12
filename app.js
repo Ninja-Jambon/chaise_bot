@@ -229,10 +229,6 @@ client.on('messageCreate', async msg => {
         addToLogs('[Discord] Sent github link')
         msg.reply('Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot')
     }
-    
-    else if (msg.content.startsWith('/q')) {
-        msg.reply("utilise la slash commande enculé")
-    }
 
     else if (msg.content.startsWith('/g')) {
         generateImage(msg.content.slice(+3)).then((res) => {
@@ -324,6 +320,9 @@ client.on('interactionCreate', async interaction => {
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
             interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Added conversation : ' + interaction.options.get('name').value);
+            console.log('[Discord] Added conversation : ' + interaction.options.get('name').value);
         } else {
             const embed = new discord.EmbedBuilder()
                 .setColor(0xFABBDE)
@@ -332,6 +331,9 @@ client.on('interactionCreate', async interaction => {
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
             
             interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Error adding conversation : ' + interaction.options.get('name').value);
+            console.log('[Discord] Error adding conversation : ' + interaction.options.get('name').value);
         }
     }
 
@@ -347,6 +349,9 @@ client.on('interactionCreate', async interaction => {
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
             interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Conversation not found in the database : ' + interaction.options.get('name').value);
+            console.log('[Discord] Conversation not found in the database : ' + interaction.options.get('name').value);
         } else {
             await delConv(interaction.options.get('name').value);
             const embed = new discord.EmbedBuilder()
@@ -356,6 +361,9 @@ client.on('interactionCreate', async interaction => {
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
             interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Conversation deleted from the database : ' + interaction.options.get('name').value);
+            console.log('[Discord] Conversation deleted from the database : ' + interaction.options.get('name').value);
         }
     }
 
@@ -377,6 +385,9 @@ client.on('interactionCreate', async interaction => {
             .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
         
         interaction.reply({ embeds : [embed] });
+
+        addToLogs('[Discord] Sent conversations list');
+        console.log('[Discord] Sent conversations list');
     }
 
     else if (interaction.commandName === 'addmsg') {
@@ -400,6 +411,9 @@ client.on('interactionCreate', async interaction => {
                 .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
             interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Quota exceeded for user : ' + interaction.member.user.username);
+            console.log('[Discord] Quota exceeded for user : ' + interaction.member.user.username);
         } else {
             await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username);
 
@@ -420,6 +434,9 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
                 interaction.editReply({ embeds : [embed_user, embed_bot] });
+
+                addToLogs('[Discord] Added message to conversation : ' + interaction.options.get('name').value);
+                console.log('[Discord] Added message to conversation : ' + interaction.options.get('name').value);
             }).catch((err) => {
                 console.log(err);
             });
@@ -428,24 +445,56 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'displayconv') {
         await interaction.deferReply();
-        messages = await getMessages(interaction.options.get('name').value, "user");
 
-        embed_text = "";
+        if (interaction.options.get('name').includes(" ")) {
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Error", iconURL : client.user.displayAvatarURL()})
+                .setDescription("Conversation name can't contain spaces")
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
-        messages.forEach(element => {
-            if (element.user == "System") {}
-            else {
-                embed_text += "**" + element.user + "** : " + element.content + "\n\n";
+            interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Conversation name can\'t contain spaces');
+            console.log('[Discord] Conversation name can\'t contain spaces');
+        }else {
+            convs = await getConvs();
+
+            if (!convs.includes(interaction.options.get('name').value)) {
+                const embed = new discord.EmbedBuilder()
+                    .setColor(0xFABBDE)
+                    .setAuthor({ name : "Error", iconURL : client.user.displayAvatarURL()})
+                    .setDescription("Conversation not found in the database")
+                    .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+                interaction.editReply({ embeds : [embed] });
+
+                addToLogs('[Discord] Conversation not found in the database');
+                console.log('[Discord] Conversation not found in the database');
             }
-        });
 
-        const embed = new discord.EmbedBuilder()
-            .setColor(0xFABBDE)
-            .setAuthor({ name : "Conversation : " + interaction.options.get('name').value, iconURL : client.user.displayAvatarURL()})
-            .setDescription(embed_text)
-            .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+            messages = await getMessages(interaction.options.get('name').value, "user");
 
-        interaction.editReply({ embeds : [embed] });
+            embed_text = "";
+
+            messages.forEach(element => {
+                if (element.user == "System") {}
+                else {
+                    embed_text += "**" + element.user + "** : " + element.content + "\n\n";
+                }
+            });
+
+            const embed = new discord.EmbedBuilder()
+                .setColor(0xFABBDE)
+                .setAuthor({ name : "Conversation : " + interaction.options.get('name').value, iconURL : client.user.displayAvatarURL()})
+                .setDescription(embed_text)
+                .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+            interaction.editReply({ embeds : [embed] });
+
+            addToLogs('[Discord] Displayed conversation : ' + interaction.options.get('name').value);
+            console.log('[Discord] Displayed conversation : ' + interaction.options.get('name').value);
+        }
     }
 
     else if (interaction.commandName === 'getmyguota') {
@@ -468,6 +517,9 @@ client.on('interactionCreate', async interaction => {
             .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
         interaction.editReply({ embeds : [embed] });
+
+        addToLogs('[Discord] Quota requested by ' + interaction.member.user.username);
+        console.log('[Discord] Quota requested by ' + interaction.member.user.username);
     }
 });
 
