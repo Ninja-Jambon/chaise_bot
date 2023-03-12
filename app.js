@@ -446,7 +446,7 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'displayconv') {
         await interaction.deferReply();
 
-        if (interaction.options.get('name').includes(" ")) {
+        if (interaction.options.get('name').value.includes(" ")) {
             const embed = new discord.EmbedBuilder()
                 .setColor(0xFABBDE)
                 .setAuthor({ name : "Error", iconURL : client.user.displayAvatarURL()})
