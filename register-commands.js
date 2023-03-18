@@ -105,14 +105,14 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);
     try {
         console.log('Started refreshing application (/) commands.');
 
-        /*await rest.put(
+        await rest.put(
             Routes.applicationGuildCommands('1059559067846189067', '1062473997297668108'),
             { body: commands },
         );
         await rest.put(
             Routes.applicationGuildCommands('1059559067846189067', '1081560091951636481'),
             { body: commands },
-        );*/
+        );
         await rest.put(
             Routes.applicationGuildCommands('1059559067846189067', '1059248968028139640'),
             { body: commands },
