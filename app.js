@@ -8,7 +8,7 @@ const { getJoke } = require('./libs/dadJokes');
 const { rtag, r34 } = require('./libs/rule34');
 const { addToLogs, isTrue, getHelp } = require('./libs/botTools');
 const { generateImage, answerQuestion, sendConv } = require('./libs/openAi');
-const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages } = require('./libs/mysql');
+const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser } = require('./libs/mysql');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
@@ -254,15 +254,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'gptrequest') {
         await interaction.deferReply();
 
-        users = await usersInDb();
-
-        if (!(users.includes(interaction.member.user.id))) {
-            await addUserToDb(interaction.member.user.id, interaction.member.user.username);
-            addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
-            console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
-        }
-
-        quota = await getQuota(interaction.member.user.id);
+        quota = isNewUser(interaction.member.user.id, interaction.member.user.username);
                 
         if (quota >= 200000) {
             const embed = new discord.EmbedBuilder()
@@ -393,15 +385,7 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'addmsg') {
         await interaction.deferReply();
 
-        users = await usersInDb();
-
-        if (!(users.includes(interaction.member.user.id))) {
-            await addUserToDb(interaction.member.user.id, interaction.member.user.username);
-            addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
-            console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
-        }
-
-        quota = await getQuota(interaction.member.user.id);
+        quota = isNewUser(interaction.member.user.id, interaction.member.user.username);
                 
         if (quota >= 200000) {
             const embed = new discord.EmbedBuilder()
@@ -500,15 +484,7 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'getmyguota') {
         await interaction.deferReply();
 
-        users = await usersInDb();
-
-        if (!(users.includes(interaction.member.user.id))) {
-            await addUserToDb(interaction.member.user.id, interaction.member.user.username);
-            addToLogs('[Discord] Added user to the database : ' + interaction.member.user.username);
-            console.log('[Discord] Added user to the database : ' + interaction.member.user.username);
-        }
-
-        quota = await getQuota(interaction.member.user.id);
+        quota = (await isNewUser(interaction.member.user.id, interaction.member.user.username)).quota;
 
         const embed = new discord.EmbedBuilder()
             .setColor(0xFABBDE)

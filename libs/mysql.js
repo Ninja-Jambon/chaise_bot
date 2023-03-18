@@ -33,15 +33,11 @@ function incrementQuota(id, value) {
 
 function usersInDb() {
     return new Promise((resolve, reject) => {
-        connection.query('SELECT userid FROM users', (error, results, fields) => {
+        connection.query('SELECT * FROM users', (error, results, fields) => {
             if (error) {
                 reject(error);
             } else {
-                users = [];
-                results.forEach(element => {
-                    users.push(element.userid);
-                });
-                resolve(users);
+                resolve(results);
             }
         });
     });
@@ -146,4 +142,24 @@ function getMessages (convName, choice) {
     });
 }
 
-module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages };
+async function isNewUser(id, username) {
+    users = await usersInDb();
+
+    test = false;
+    quota = 0;
+
+    users.forEach(element => {
+        if (element.userid == id) {
+            test = true;
+            quota = element.quota;
+        }
+    });
+
+    if (test == false) {
+        addUserToDb(id, username);
+    }
+
+    return {quota : quota};
+}
+
+module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser };
