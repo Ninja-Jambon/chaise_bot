@@ -254,7 +254,10 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'gptrequest') {
         await interaction.deferReply();
 
-        quota = isNewUser(interaction.member.user.id, interaction.member.user.username);
+        quota = isNewUser(interaction.member.user.id, interaction.member.user.username).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+        });
                 
         if (quota >= 200000) {
             const embed = new discord.EmbedBuilder()
@@ -267,17 +270,34 @@ client.on('interactionCreate', async interaction => {
         }
         else {
             answerQuestion(interaction.options.get('question').value).then((res) => {
-                incrementQuota(interaction.member.user.id, res.data.usage.total_tokens);
+                incrementQuota(interaction.member.user.id, res.data.usage.total_tokens).catch((err) => {
+                    console.log(err);
+                    addToLogs(err);
+                });
+
                 if (res.data.choices[0].message.content.length > 4096) {
-                    interaction.editReply(res.data.choices[0].message.content);
-                    addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
-                    console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
-                }
-                else{
                     const embed = new discord.EmbedBuilder()
                         .setColor(0xFABBDE)
                         .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
                         .setTitle("Question : " + interaction.options.get('question').value)
+                        .setDescription("The answer is too long to be displayed, please try again with a shorter question.")
+                        .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+                    console.log('[Discord] Sent answer to : ' + interaction.options.get('question').value);
+                    addToLogs('[Discord] Sent answer to : ' +interaction.options.get('question').value);
+                    interaction.editReply({ embeds : [embed] });
+                }
+                else{
+                    title = "Question : " + interaction.options.get('question').value;
+
+                    if (title.length > 256) {
+                        title = title.slice(0, 253) + "...";
+                    }
+
+                    const embed = new discord.EmbedBuilder()
+                        .setColor(0xFABBDE)
+                        .setAuthor({ name : "Reply to : " + interaction.member.user.username, iconURL : "https://cdn.discordapp.com/avatars/"+interaction.member.user.id+"/"+interaction.member.user.avatar+".jpeg"})
+                        .setTitle(title)
                         .setDescription(res.data.choices[0].message.content)
                         .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
                     
@@ -302,7 +322,10 @@ client.on('interactionCreate', async interaction => {
 
     else if (interaction.commandName === 'addconv') {
         await interaction.deferReply();
-        convs = await getConvs();
+        convs = await getConvs().catch((err) => {
+            console.log(err);
+            addToLogs(err);
+        });
         if (!interaction.options.get('name').value.includes(" ") && !convs.includes(interaction.options.get('name').value)) {
             await addConv(interaction.options.get('name').value);
             const embed = new discord.EmbedBuilder()
@@ -332,7 +355,10 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'delconv') {
         await interaction.deferReply();
 
-        convs = await getConvs();
+        convs = await getConvs().catch((err) => {
+            console.log(err);
+            addToLogs(err);
+        });
         if (!convs.includes(interaction.options.get('name').value)) {
             const embed = new discord.EmbedBuilder()
                 .setColor(0xFABBDE)
@@ -360,7 +386,10 @@ client.on('interactionCreate', async interaction => {
     }
 
     else if (interaction.commandName === 'listconvs') {
-        convs = await getConvs();
+        convs = await getConvs().catch((err) => {
+            console.log(err);
+            addToLogs(err);
+        });
         message = "";
         if (convs.length == 0) {
             message = "No conversations in the database";
@@ -385,7 +414,10 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'addmsg') {
         await interaction.deferReply();
 
-        quota = isNewUser(interaction.member.user.id, interaction.member.user.username);
+        quota = isNewUser(interaction.member.user.id, interaction.member.user.username).catch((err) => {
+            console.log(err);
+            addToLogs(err);
+        });
                 
         if (quota >= 200000) {
             const embed = new discord.EmbedBuilder()
@@ -399,12 +431,21 @@ client.on('interactionCreate', async interaction => {
             addToLogs('[Discord] Quota exceeded for user : ' + interaction.member.user.username);
             console.log('[Discord] Quota exceeded for user : ' + interaction.member.user.username);
         } else {
-            await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username);
+            await addMessage(interaction.options.get('name').value,"user" ,interaction.options.get('message').value, interaction.member.user.username).catch((err) => {
+                console.log(err);
+                addToLogs(err);
+            });
 
-            messages = await getMessages(interaction.options.get('name').value, "role");
+            messages = await getMessages(interaction.options.get('name').value, "role").catch((err) => {
+                console.log(err);
+                addToLogs(err);
+            });
 
             sendConv(messages).then((res) => {
-                addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content , "Chaise bot");
+                addMessage(interaction.options.get('name').value,"assistant",res.data.choices[0].message.content , "Chaise bot").catch((err) => {
+                    console.log(err);
+                    addToLogs(err);
+                });
 
                 const embed_user = new discord.EmbedBuilder()
                     .setColor(0xBBFAF4)
@@ -442,7 +483,10 @@ client.on('interactionCreate', async interaction => {
             addToLogs('[Discord] Conversation name can\'t contain spaces');
             console.log('[Discord] Conversation name can\'t contain spaces');
         }else {
-            convs = await getConvs();
+            convs = await getConvs().catch((err) => {
+                console.log(err);
+                addToLogs(err);
+            });
 
             if (!convs.includes(interaction.options.get('name').value)) {
                 const embed = new discord.EmbedBuilder()
@@ -457,7 +501,10 @@ client.on('interactionCreate', async interaction => {
                 console.log('[Discord] Conversation not found in the database');
             }
 
-            messages = await getMessages(interaction.options.get('name').value, "user");
+            messages = await getMessages(interaction.options.get('name').value, "user").catch((err) => {
+                console.log(err);
+                addToLogs(err);
+            });
 
             embed_text = "";
 
@@ -484,7 +531,10 @@ client.on('interactionCreate', async interaction => {
     else if (interaction.commandName === 'getmyguota') {
         await interaction.deferReply();
 
-        quota = (await isNewUser(interaction.member.user.id, interaction.member.user.username)).quota;
+        quota = (await isNewUser(interaction.member.user.id, interaction.member.user.username).catch((error) => {
+            console.log(error);
+            addToLogs(error);
+        })).quota;
 
         const embed = new discord.EmbedBuilder()
             .setColor(0xFABBDE)

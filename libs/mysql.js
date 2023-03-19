@@ -143,23 +143,27 @@ function getMessages (convName, choice) {
 }
 
 async function isNewUser(id, username) {
-    users = await usersInDb();
+    return new Promise(async (resolve, reject) => {
+        users = await usersInDb().catch(error => {
+            reject(error);
+        });
 
-    test = false;
-    quota = 0;
+        test = false;
+        quota = 0;
 
-    users.forEach(element => {
-        if (element.userid == id) {
-            test = true;
-            quota = element.quota;
+        users.forEach(element => {
+            if (element.userid == id) {
+                test = true;
+                quota = element.quota;
+            }
+        });
+
+        if (test == false) {
+            addUserToDb(id, username);
         }
+
+        resolve({quota : quota});
     });
-
-    if (test == false) {
-        addUserToDb(id, username);
-    }
-
-    return {quota : quota};
 }
 
 module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser };
