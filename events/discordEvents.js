@@ -7,13 +7,7 @@ const { incrementQuota, addConv, delConv, getConvs, addMessage, getMessages, isN
 module.exports = {
     newMessage : (client) => {
         client.on('messageCreate', async msg => {
-            if (msg.content.startsWith('/github')) {
-                console.log('[Discord] Sent github link')
-                addToLogs('[Discord] Sent github link')
-                msg.reply('Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot')
-            }
-        
-            else if (msg.content.startsWith('/g')) {
+            if (msg.content.startsWith('/g')) {
                 generateImage(msg.content.slice(+3)).then((res) => {
                     console.log('[Discord] Sent image to : ' + msg.content.slice(+3));
                     addToLogs('[Discord] Sent image to : ' + msg.content.slice(+3));
@@ -335,6 +329,21 @@ module.exports = {
         
                 addToLogs('[Discord] Quota requested by ' + interaction.member.user.username);
                 console.log('[Discord] Quota requested by ' + interaction.member.user.username);
+            }
+
+            else if (interaction.commandName === 'github') {
+                await interaction.deferReply();
+        
+                const embed = new discord.EmbedBuilder()
+                    .setColor(0xFABBDE)
+                    .setAuthor({ name : "Github", iconURL : client.user.displayAvatarURL()})
+                    .setDescription('Link of the Gihhub repository :\n  https://github.com/Ninja-Jambon/chaise_bot')
+                    .setFooter({ text : "Powered by OpenAI https://www.openai.com/", iconURL : "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+
+                interaction.editReply({ embeds : [embed] });
+
+                addToLogs('[Discord] Github requested by ' + interaction.member.user.username);
+                console.log('[Discord] Github requested by ' + interaction.member.user.username);
             }
         });
     }

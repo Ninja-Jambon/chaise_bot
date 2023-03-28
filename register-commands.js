@@ -97,6 +97,11 @@ const commands = [
         name : 'getmyguota',
         description : 'Get your quota',
     },
+
+    {
+        name : 'github',
+        description : 'Get the github link of the bot',
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);
@@ -106,15 +111,15 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);
         console.log('Started refreshing application (/) commands.');
 
         await rest.put(
-            Routes.applicationGuildCommands('1059559067846189067', '1062473997297668108'),
+            Routes.applicationGuildCommands('1059559067846189067', '1062473997297668108'), //Les Clochards
             { body: commands },
         );
         await rest.put(
-            Routes.applicationGuildCommands('1059559067846189067', '1081560091951636481'),
+            Routes.applicationGuildCommands('1059559067846189067', '1081560091951636481'), //Fish and Chips
             { body: commands },
         );
         await rest.put(
-            Routes.applicationGuildCommands('1059559067846189067', '1059248968028139640'),
+            Routes.applicationGuildCommands('1059559067846189067', '1059248968028139640'), //Serveur de test
             { body: commands },
         );
 
