@@ -23,7 +23,7 @@ async function generateImage(query, ctx, bot) {
 
 async function answerQuestion(query) {
   response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     messages: [{ "role" : "user", "content" : query}],
     temperature: 0.9,
   }).catch((err) => {
@@ -36,7 +36,7 @@ async function answerQuestion(query) {
 
 async function sendConv (messages) {
   response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     messages: messages,
     temperature: 0.9,
   }).catch((err) => {
