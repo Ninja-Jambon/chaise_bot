@@ -218,15 +218,15 @@ bot.command('addmsg', async ctx => {
     }
 })
 
-//Discord commands
+//Discord events
 client.on('ready', () => {
     console.log(`[Discord] Logged in as ${client.user.tag} !`);
     client.user.setPresence({ activities: [{ name: 'la belle chaise', type : 3}] });
 });
 
 discordEvents.newMessage(client);
+
 discordEvents.newInteraction(client);
 
-//bot launch
 bot.launch()
 client.login(process.env.DISCORD);
