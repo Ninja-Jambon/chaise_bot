@@ -26,6 +26,20 @@ async function answerQuestion(query) {
     model: "gpt-4",
     messages: [{ "role" : "user", "content" : query}],
     temperature: 0.9,
+    max_tokens: 300,
+  }).catch((err) => {
+    console.log(err);
+    addToLogs("--> error : " + err);
+  })
+  
+  return response;
+}
+
+async function quickAnswer(query) {
+  response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [{ "role" : "user", "content" : query}],
+    temperature: 0.9,
   }).catch((err) => {
     console.log(err);
     addToLogs("--> error : " + err);
@@ -47,4 +61,4 @@ async function sendConv (messages) {
   return response;
 }
 
-module.exports = { generateImage, answerQuestion, sendConv };
+module.exports = { generateImage, answerQuestion, sendConv, quickAnswer };

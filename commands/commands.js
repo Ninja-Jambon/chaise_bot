@@ -15,6 +15,19 @@ const commands = [
     },
 
     {
+        name: 'quickgpt',
+        description: 'Make a quicker request to the GPT-3.5 API',
+        options: [
+            {
+                name: 'question',
+                description: 'The question you want to ask to the API',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            },
+        ],
+    },
+
+    {
         name : 'info',
         description : 'utilise pas cette commande fdp',
     },
