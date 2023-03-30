@@ -3,7 +3,7 @@ const {ApplicationCommandOptionType} = require('discord.js');
 const commands = [
     {
         name: 'gptrequest',
-        description: 'Make a request to the GPT-3.5-Turbo API',
+        description: 'Make a request to the GPT-4 API',
         options: [
             {
                 name: 'question',
@@ -101,11 +101,6 @@ const commands = [
     {
         name : 'github',
         description : 'Get the github link of the bot',
-    },
-
-    {
-        name : 'servers',
-        description : 'Get the number of servers the bot is in',
     },
 ];
 

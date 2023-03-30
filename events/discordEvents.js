@@ -6,7 +6,7 @@ const { incrementQuota, addConv, delConv, getConvs, addMessage, getMessages, isN
 
 const { commands } = require('../commands/commands');
 
-async function gptrequest(interaction) {
+async function gptrequest(interaction, client) {
     await interaction.deferReply();
 
     quota = isNewUser(interaction.member.user.id, interaction.member.user.username).catch((err) => {
@@ -72,7 +72,7 @@ async function gptrequest(interaction) {
 }
 
 
-async function addconv(interaction) {
+async function addconv(interaction, client) {
     await interaction.deferReply();
     convs = await getConvs().catch((err) => {
         console.log(err);
@@ -105,7 +105,7 @@ async function addconv(interaction) {
 }
 
 
-async function delconv(interaction) {
+async function delconv(interaction, client) {
     await interaction.deferReply();
 
     convs = await getConvs().catch((err) => {
@@ -139,7 +139,7 @@ async function delconv(interaction) {
 }
 
 
-async function listconvs(interaction) {
+async function listconvs(interaction, client) {
     convs = await getConvs().catch((err) => {
         console.log(err);
         addToLogs(err);
@@ -166,7 +166,7 @@ async function listconvs(interaction) {
 }
 
 
-async function addmsg(interaction) {
+async function addmsg(interaction, client) {
     await interaction.deferReply();
 
     quota = isNewUser(interaction.member.user.id, interaction.member.user.username).catch((err) => {
@@ -224,7 +224,7 @@ async function addmsg(interaction) {
 }
 
 
-async function displayconv(interaction) {
+async function displayconv(interaction, client) {
     await interaction.deferReply();
 
     if (interaction.options.get('name').value.includes(" ")) {
@@ -310,7 +310,7 @@ async function getmyguota(interaction) {
 }
 
 
-async function github(interation) {
+async function github(interaction, client) {
     await interaction.deferReply();
 
     const embed = new discord.EmbedBuilder()
@@ -323,14 +323,6 @@ async function github(interation) {
 
     addToLogs('[Discord] Github requested by ' + interaction.member.user.username);
     console.log('[Discord] Github requested by ' + interaction.member.user.username);
-}
-
-
-async function servers(client) {
-    console.log("Serveurs:");
-    client.guilds.cache.forEach((guild) => {
-        console.log(" - " + guild);
-    })
 }
 
 module.exports = {
@@ -360,7 +352,7 @@ module.exports = {
             if (!interaction.isCommand()) return;
 
             if (interaction.commandName === 'gptrequest') {
-                gptrequest(interaction);
+                gptrequest(interaction, client);
             }
 
             else if (interaction.commandName === 'info') {
@@ -368,23 +360,23 @@ module.exports = {
             }
 
             else if (interaction.commandName === 'addconv') {
-                addconv(interaction);
+                addconv(interaction, client);
             }
 
             else if (interaction.commandName === 'delconv') {
-                delconv(interaction);
+                delconv(interaction, client);
             }
 
             else if (interaction.commandName === 'listconvs') {
-                listconvs(interaction);
+                listconvs(interaction, client);
             }
 
             else if (interaction.commandName === 'addmsg') {
-                addmsg(interaction);
+                addmsg(interaction, client);
             }
 
             else if (interaction.commandName === 'displayconv') {
-                displayconv(interaction);
+                displayconv(interaction, client);
             }
 
             else if (interaction.commandName === 'getmyguota') {
@@ -392,11 +384,7 @@ module.exports = {
             }
 
             else if (interaction.commandName === 'github') {
-                github(interaction);
-            }
-
-            else if (interaction.commandName === 'servers') {
-                servers(client);
+                github(interaction, client);
             }
         });
     },
