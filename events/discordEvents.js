@@ -4,6 +4,8 @@ const { addToLogs } = require('../libs/botTools');
 const { generateImage, answerQuestion, sendConv } = require('../libs/openAi');
 const { incrementQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser } = require('../libs/mysql');
 
+const { commands } = require('../commands/commands');
+
 async function gptrequest(interaction) {
     await interaction.deferReply();
 
@@ -323,6 +325,14 @@ async function github(interation) {
     console.log('[Discord] Github requested by ' + interaction.member.user.username);
 }
 
+
+async function servers(client) {
+    console.log("Serveurs:");
+    client.guilds.cache.forEach((guild) => {
+        console.log(" - " + guild);
+    })
+}
+
 module.exports = {
     newMessage: (client) => {
         client.on('messageCreate', async msg => {
@@ -384,6 +394,49 @@ module.exports = {
             else if (interaction.commandName === 'github') {
                 github(interaction);
             }
+
+            else if (interaction.commandName === 'servers') {
+                servers(client);
+            }
         });
-    }
+    },
+
+    ready: (client) => {
+        client.on('ready', () => {
+            console.log(`[Discord] Logged in as ${client.user.tag} !`);
+            client.user.setPresence({ activities: [{ name: 'la belle chaise', type: 3 }] });
+
+            const rest = new discord.REST({ version: '10' }).setToken(process.env.DISCORD);
+
+            client.guilds.cache.forEach(async (guild) => {
+                try {
+                    await rest.put(
+                        discord.Routes.applicationGuildCommands('1059559067846189067', guild.id),
+                        { body: commands },
+                    );
+
+                    console.log('[Discord] Successfully reloaded application (/) commands for ' + guild.name + '.');
+                } catch (error) {
+                    console.error(error);
+                }
+            })
+        });
+    },
+
+    guildCreate: (client) => {
+        client.on('guildCreate', async (guild) => {
+            const rest = new discord.REST({ version: '10' }).setToken(process.env.DISCORD);
+
+            try {
+                await rest.put(
+                    discord.Routes.applicationGuildCommands('1059559067846189067', guild.id),
+                    { body: commands },
+                );
+
+                console.log('[Discord] Successfully reloaded application (/) commands for ' + guild.name + '.');
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    },
 }

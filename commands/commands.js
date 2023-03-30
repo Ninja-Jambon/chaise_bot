@@ -1,4 +1,4 @@
-const {REST , Routes, ApplicationCommandOptionType} = require('discord.js');
+const {ApplicationCommandOptionType} = require('discord.js');
 
 const commands = [
     {
@@ -102,21 +102,11 @@ const commands = [
         name : 'github',
         description : 'Get the github link of the bot',
     },
+
+    {
+        name : 'servers',
+        description : 'Get the number of servers the bot is in',
+    },
 ];
 
-const rest = new REST({ version: '10' }).setToken(process.env.DISCORD);
-
-(async () => {
-    try {
-        console.log('Started refreshing application (/) commands.');
-
-        await rest.put(
-            Routes.applicationGuildCommands('<your discord bot ID>', '<your discord server ID>'),
-            { body: commands },
-        );
-
-        console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-        console.error(error);
-    }
-})();
+module.exports = { commands };
