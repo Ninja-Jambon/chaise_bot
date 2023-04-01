@@ -23,9 +23,12 @@ module.exports = {
                 fs.readFile('./src/telegram_helps/default.txt', 'utf8', (err, data) => {
                     if (err) {
                         console.log(err);
+                        addToLogs(err);
                         bot.telegram.sendMessage(ctx.chat.id, "Something went wrong", {});
                     } else {
                         bot.telegram.sendMessage(ctx.chat.id, data, {parse_mode: 'Markdown'});
+                        console.log("[Telegram] sent the help message to " + ctx.message.from.username);
+                        addToLogs("[Telegram] sent the help message to " + ctx.message.from.username);
                     }
                 });
             }
@@ -35,8 +38,8 @@ module.exports = {
     github : (bot) => {
         bot.command('github', ctx => {
             bot.telegram.sendMessage(ctx.chat.id, 'Link of the Gihhub repository :\n  -https://github.com/Ninja-Jambon/chaise_bot', {})
-            console.log('--> sent github link')
-            addToLogs('--> sent github link')
+            console.log('[Telegram] sent github link')
+            addToLogs('[Telegram] sent github link')
         })
     },
 
@@ -48,8 +51,8 @@ module.exports = {
 
     chatinfo : (bot) => {
         bot.command('chatinfo', ctx => {
-            console.log('--> sent chat info')
-            addToLogs('--> sent chat info')
+            console.log('[Telegram] sent chat info')
+            addToLogs('[Telegram] sent chat info')
             bot.telegram.sendMessage(ctx.chat.id, 'Chat id : ' + ctx.chat.id, {})
         })
     },
@@ -58,8 +61,8 @@ module.exports = {
         bot.command('suggest', ctx => {
             bot.telegram.sendMessage('-1001782224138', 'New suggestion of ' + ctx.message.from.username + " : " + ctx.message.text.slice(+9), {})
             bot.telegram.sendMessage(ctx.chat.id, 'Your suggestion has been sent to the channel t.me/+SrzC81CGyusyODNk', {})
-            console.log('--> sent suggestion message to the channel')
-            addToLogs('--> sent suggestion message to the channel')
+            console.log('[Telegram] sent suggestion message to the channel')
+            addToLogs('[Telegram] sent suggestion message to the channel')
         })
     },
 
@@ -78,7 +81,7 @@ module.exports = {
     dadjoke : (bot) => {
         bot.command('dadjoke', ctx => {
             getJoke(ctx, bot)
-            console.log('--> sent a dad joke')
+            console.log('[Telegram] sent a dad joke')
         })
     },
 
