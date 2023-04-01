@@ -26,7 +26,6 @@ async function answerQuestion(query) {
     model: "gpt-4",
     messages: [{ "role" : "user", "content" : query}],
     temperature: 0.9,
-    max_tokens: 300,
   }).catch((err) => {
     console.log(err);
     addToLogs("--> error : " + err);
