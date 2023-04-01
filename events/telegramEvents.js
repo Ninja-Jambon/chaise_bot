@@ -3,8 +3,8 @@ const fs = require('fs');
 const { getJoke } = require('../libs/dadJokes');
 const { rtag, r34 } = require('../libs/rule34');
 const { addToLogs, isTrue, getHelp } = require('../libs/botTools');
-const { generateImage, answerQuestion, sendConv, quickAnswer } = require('../libs/openAi');
-const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser } = require('../libs/mysql');
+const { generateImage, answerQuestion, sendConv } = require('../libs/openAi');
+const { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages } = require('../libs/mysql');
 
 module.exports = {
     start : (bot) => {
