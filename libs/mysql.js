@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-    host: "localhost",
+    host: process.env.MYSQL_HOST,
     user: "root",
     password: process.env.MYSQL,
     database: "discord"
@@ -13,6 +13,7 @@ function addUserToDb(id, user) {
             if (error) {
                 reject(error);
             } else {
+                console.log('User added to database');
                 resolve();
             }
         });

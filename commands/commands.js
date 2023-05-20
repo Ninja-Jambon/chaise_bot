@@ -33,19 +33,6 @@ const commands = [
     },
 
     {
-        name : 'createconv',
-        description : 'Create a new conversation',
-        options : [
-            {
-                name : 'name',
-                description : 'The name of the conversation',
-                type : ApplicationCommandOptionType.String,
-                required : true,
-            },
-        ],
-    },
-
-    {
         name : 'addconv',
         description : 'Add a conversation to the database',
         options : [
