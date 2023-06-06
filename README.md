@@ -22,7 +22,7 @@ To get Chaise Bot up and running on your Discord or Telegram server, follow thes
 
 1. Clone this repository
 2. Rename `docker-compose-exemple.yml` to `docker-compose.yml`
-3. Configure your bot's API keys and settings in docker-compose.yml
+3. Configure your bot's API keys and settings in `docker-compose.yml`
 4. Run `docker-compose up -d` to build the bot's Docker image and start the container
 
 ## Usage
