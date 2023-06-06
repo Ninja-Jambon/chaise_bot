@@ -102,6 +102,19 @@ const commands = [
         name : 'github',
         description : 'Get the github link of the bot',
     },
+
+    {
+        name : 'dalle',
+        description : 'Make a request to the DALL-E API',
+        options : [
+            {
+                name : 'query',
+                description : 'The query you want to ask to the API',
+                type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+        ],
+    },
 ];
 
 module.exports = { commands };
