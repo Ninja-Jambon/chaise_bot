@@ -144,6 +144,7 @@ async function addconv(interaction, client) {
         console.log(err);
         addToLogs(err);
     });
+
     if (!interaction.options.get('name').value.includes(" ") && !convs.includes(interaction.options.get('name').value)) {
         await addConv(interaction.options.get('name').value);
         const embed = new discord.EmbedBuilder()
@@ -264,7 +265,7 @@ async function addmsg(interaction, client) {
         });
 
         sendConv(messages).then((res) => {
-            addMessage(interaction.options.get('name').value, "assistant", res.data.choices[0].message.content, "Chaise bot").catch((err) => {
+            addMessage(interaction.options.get('name').value, "assistant", res.data.choices[0].message.content.replace(/"/g, "\'").replace("\""), "Chaise bot").catch((err) => {
                 console.log(err);
                 addToLogs(err);
             });

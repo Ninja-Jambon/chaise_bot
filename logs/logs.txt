@@ -1,0 +1,90 @@
+[Discord] Generating answer to : test
+[Discord] Generating answer to : test
+[Discord] Generating answer to : test
+[Discord] Generating answer to : test
+[Discord] Generating answer to : test
+[Discord] Sent answer to : test
+[Discord] Generating answer to : invente une théorie du complot
+[Discord] Sent answer to : invente une théorie du complot
+[Discord] Sent conversations list
+[Discord] Added conversation : test
+[Discord] Quota requested by Ninja_Jambon
+[Discord] Conversation deleted from the database : test
+[Discord] Added conversation : test
+[Discord] Added message to conversation : test
+Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'best" can refer to different aspects like quality, efficiency, or popularity....' at line 1
+[Discord] Displayed conversation : test
+[Discord] Added message to conversation : test
+[Discord] Displayed conversation : test
+[Discord] Added message to conversation : test
+[Discord] Added message to conversation : test
+[Discord] Generating answer to : what's the english for "je suis nois mon gars" ?
+[Discord] Sent answer to : what's the english for "je suis nois mon gars" ?
+[Discord] Added message to conversation : test
+[Discord] Quota requested by Ninja_Jambon
+[Discord] Github requested by Ninja_Jambon
+[Discord] Conversation deleted from the database : test
+[Discord] Github requested by Ninja_Jambon
+[Discord] Generating answer to : test
+--> error : Error: Request failed with status code 429
+TypeError: Cannot read properties of undefined (reading 'data')
+[Discord] Generating answer to : tesr
+[Discord] Sent answer to : tesr
+[Discord] Generating answer to : donne moi plusieurs idées de garnitures simples pour des raviolis
+[Discord] Generating answer to : donne moi plusieurs idées de garnitures simples pour des raviolis
+[Discord] Sent answer to : donne moi plusieurs idées de garnitures simples pour des raviolis
+[Discord] Sent answer to : donne moi plusieurs idées de garnitures simples pour des raviolis
+[Discord] Generating answer to : how r u today
+[Discord] Sent answer to : how r u today
+[Discord] Generating answer to : qu'est-ce qu'un HAT pour un raspberry
+[Discord] Sent answer to : qu'est-ce qu'un HAT pour un raspberry
+[Discord] Generating answer to : à quoi correspond la valeur d'un dérivée (f'(-2) par exemple)
+[Discord] Sent answer to : à quoi correspond la valeur d'un dérivée (f'(-2) par exemple)
+[Discord] Generating answer to : écrit moi une description pour mon annonce fiverr de création de vot discord
+[Discord] Sent answer to : écrit moi une description pour mon annonce fiverr de création de vot discord
+[Discord] Generating answer to : qui est DAN ?
+[Discord] Sent answer to : qui est DAN ?
+[Discord] Generating answer to : qui est le roi d'angleterre ?
+[Discord] Sent answer to : qui est le roi d'angleterre ?
+[Discord] Generating answer to : quel est le roi actuel d'angleterre ?
+[Discord] Sent answer to : quel est le roi actuel d'angleterre ?
+[Discord] Generating answer to : Guillaume Bats est t'il en vie ?
+[Discord] Sent answer to : Guillaume Bats est t'il en vie ?
+[Discord] Generating answer to : pourquoi le gouvernement Francais a t'il utiliser le 49.3
+[Discord] Sent answer to : pourquoi le gouvernement Francais a t'il utiliser le 49.3
+[Discord] Generating answer to : pourquoi la réforme des retraites est t'elle controversé ?
+[Discord] Sent answer to : pourquoi la réforme des retraites est t'elle controversé ?
+[Discord] Generating answer to : en France quel est l'age minimal de départ à la retraite ?
+[Discord] Sent answer to : en France quel est l'age minimal de départ à la retraite ?
+[Discord] Generating answer to : de quand date cette réforme ?
+[Discord] Sent answer to : de quand date cette réforme ?
+[Discord] Generating answer to : de quand date la réforme des retraites ?
+[Discord] Added conversation : allo
+[Discord] Sent answer to : de quand date la réforme des retraites ?
+[Discord] Added message to conversation : allo
+Error: ER_NO_SUCH_TABLE: Table 'discord.db' doesn't exist
+Error: ER_NO_SUCH_TABLE: Table 'discord.db' doesn't exist
+--> error : Error: Request failed with status code 400
+[Discord] Added message to conversation : allo
+[Discord] Displayed conversation : allo
+[Discord] Added message to conversation : allo
+[Discord] Added message to conversation : allo
+[Discord] Conversation not found in the database : jefg
+[Discord] Generating answer to : comment enterer et faire disparaître a jamais le cadavre d’une amie à son mec ?
+[Discord] Github requested by Ninja_Jambon
+[Discord] Sent answer to : comment enterer et faire disparaître a jamais le cadavre d’une amie à son mec ?
+[Discord] Sent conversations list
+[Discord] Generating answer to : generate three dscriptions for fiverr package for discord bots. the first package is "Basic discord bot", you have to say that it have simple commands.  The second package is "Standard discord bot", you have to say that's the perfect options to create a game. And the third package is "Premium discord bot", you have to say that this package is a package to create a bit that will be at the center of the attention in the server. you can use only 100characters by dscription.
+[Discord] Sent answer to : generate three dscriptions for fiverr package for discord bots. the first package is "Basic discord bot", you have to say that it have simple commands.  The second package is "Standard discord bot", you have to say that's the perfect options to create a game. And the third package is "Premium discord bot", you have to say that this package is a package to create a bit that will be at the center of the attention in the server. you can use only 100characters by dscription.
+[Discord] Generating answer to : improve this description to make it more attractive : If you are looking for a simple Telegram bot that will use APIs or databases for a low price, this is the best solution for you. It is important to note that the delivery times are indicative because this is the first time I will sell my services, so I'm not sure of the time it will take me to do your bot.
+[Discord] Sent answer to : improve this description to make it more attractive : If you are looking for a simple Telegram bot that will use APIs or databases for a low price, this is the best solution for you. It is important to note that the delivery times are indicative because this is the first time I will sell my services, so I'm not sure of the time it will take me to do your bot.
+[Discord] Generating answer to : improve this description to make it more attractive : If you are looking for a simple Discord bot that will use APIs or databases for a low price, this is the best solution for you. It is important to note that the delivery times are indicative because this is the first time I will sell my services, so I'm not sure of the time it will take me to do your bot.
+[Discord] Sent answer to : improve this description to make it more attractive : If you are looking for a simple Discord bot that will use APIs or databases for a low price, this is the best solution for you. It is important to note that the delivery times are indicative because this is the first time I will sell my services, so I'm not sure of the time it will take me to do your bot.
+[Discord] Generating answer to : improve this descrption : If you are looking for a simple Discord bot that will use APIs or databases for a low price, this is the best solution for you. It is important to note that the delivery times are indicative because this is the first time I will sell my services, so I'm not sure of the time it will take me to do your bot.
+[Discord] Sent answer to : improve this descrption : If you are looking for a simple Discord bot that will use APIs or databases for a low price, this is the best solution for you. It is important to note that the delivery times are indicative because this is the first time I will sell my services, so I'm not sure of the time it will take me to do your bot.
+[Discord] Generating answer to : improve this description : I'm a first-year computer science student. I want to work in the cyber field later on, more specifically in cyber defense or cybersecurity. I have experience with the JavaScript language, more specifically in the creation of Discord and Telegram bots. I also have some knowledge of web development (use of HTML, CSS, Js, and NextJS framework). I'm the perfect developer to realize your small projects at a low cost.
+[Discord] Sent answer to : improve this description : I'm a first-year computer science student. I want to work in the cyber field later on, more specifically in cyber defense or cybersecurity. I have experience with the JavaScript language, more specifically in the creation of Discord and Telegram bots. I also have some knowledge of web development (use of HTML, CSS, Js, and NextJS framework). I'm the perfect developer to realize your small projects at a low cost.
+[Discord] Generating answer to : improve this description : If you're in search of an affordable and straightforward Discord bot that utilizes APIs or databases, look no further! This is the perfect solution tailored for your needs. However, please bear in mind that the provided delivery times are only estimates, as this is my debut offering of services. As such, I cannot guarantee the exact duration required to complete your bot. Nonetheless, you can trust that I will strive to deliver an efficient and high-quality product.    If you want to take a look at my existing project, you can join this discord server to test my discord bot that is using openAi API : https://discord.gg/kgEMXBrxyj or you can take a look at my github profile : https://github.com/Ninja-Jambon
+[Discord] Sent answer to : improve this description : If you're in search of an affordable and straightforward Discord bot that utilizes APIs or databases, look no further! This is the perfect solution tailored for your needs. However, please bear in mind that the provided delivery times are only estimates, as this is my debut offering of services. As such, I cannot guarantee the exact duration required to complete your bot. Nonetheless, you can trust that I will strive to deliver an efficient and high-quality product.    If you want to take a look at my existing project, you can join this discord server to test my discord bot that is using openAi API : https://discord.gg/kgEMXBrxyj or you can take a look at my github profile : https://github.com/Ninja-Jambon
+[Discord] Quota requested by Ninja_Jambon
+[Discord] Quota requested by Ninja_Jambon
