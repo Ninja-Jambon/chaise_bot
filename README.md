@@ -8,14 +8,22 @@ Welcome to Chaise Bot's GitHub repository! Chaise Bot is a versatile and powerfu
 - Utilizes OpenAI's API for natural language processing and advanced conversation capabilities
 - Easy setup and configuration
 
+## Prerequisites
+
+- Docker
+- Node.js
+- Discord bot token
+- Telegram bot token
+- OpenAI API key
+
 ## Getting Started
 
 To get Chaise Bot up and running on your Discord or Telegram server, follow these simple steps:
 
 1. Clone this repository
-2. Install the required dependencies
-3. Configure your bot's API keys and settings
-4. Deploy the bot on your server
+2. Rename `docker-compose-exemple.yml` to `docker-compose.yml`
+3. Configure your bot's API keys and settings in docker-compose.yml
+4. Run `docker-compose up -d` to build the bot's Docker image and start the container
 
 ## Usage
 
