@@ -23,7 +23,7 @@ async function gptrequest(interaction, client) {
     }
     else {
         answerQuestion(interaction.options.get('question').value).then((res) => {
-            incrementQuota(interaction.member.user.id, res.data.usage.total_tokens).catch((err) => {
+            incrementQuota(interaction.member.user.id, res.data.usage.total_tokens * 15).catch((err) => {
                 console.log(err);
                 addToLogs(err);
             });

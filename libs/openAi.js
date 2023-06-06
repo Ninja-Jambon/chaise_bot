@@ -7,8 +7,8 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-async function generateImage(query, ctx, bot) {
-  const image = await openai.createImage({
+async function generateImage(query) {
+  response = await openai.createImage({
     prompt: query,
     n: 1,
     size: "1024x1024",
@@ -18,7 +18,7 @@ async function generateImage(query, ctx, bot) {
     addToLogs("--> error : " + err);
   });
     
-  return image;
+  return response;
 }
 
 async function answerQuestion(query) {

@@ -2,7 +2,7 @@ const discord = require('discord.js');
 
 const { addToLogs } = require('../../libs/botTools');
 const { sendConv } = require('../../libs/openAi');
-const { getConvs, addMessage, getMessages, isNewUser } = require('../../libs/mysql');
+const { getConvs, addMessage, getMessages, isNewUser, incrementQuota } = require('../../libs/mysql');
 
 async function addmsg(interaction, client) {
     await interaction.deferReply();
@@ -51,6 +51,11 @@ async function addmsg(interaction, client) {
             });
 
             sendConv(messages).then((res) => {
+                incrementQuota(interaction.member.user.id, res.data.usage.total_tokens * 15).catch((err) => {
+                    console.log(err);
+                    addToLogs(err);
+                });
+
                 addMessage(interaction.options.get('name').value, "assistant", res.data.choices[0].message.content.replace(/"/g, "\'").replace("\""), "Chaise bot").catch((err) => {
                     console.log(err);
                     addToLogs(err);

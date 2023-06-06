@@ -14,24 +14,13 @@ const addmsg = require('../functions/discord/addmsg');
 const displayconv = require('../functions/discord/displayconv');
 const getmyguota = require('../functions/discord/getmyguota');
 const github = require('../functions/discord/github');
+const dalle = require('../functions/discord/dalle');
 
 module.exports = {
     newMessage: (client) => {
         client.on('messageCreate', async msg => {
             if (msg.content.startsWith('/g')) {
-                generateImage(msg.content.slice(+3)).then((res) => {
-                    console.log('[Discord] Sent image to : ' + msg.content.slice(+3));
-                    addToLogs('[Discord] Sent image to : ' + msg.content.slice(+3));
-                    msg.channel.send(res.data.data[0].url);
-                }).catch((err) => {
-                    console.log(err);
-                    addToLogs(err);
-                    msg.reply("Something went wrong");
-                })
-
-                console.log('[Discord] Generating image to : ' + msg.content.slice(+3));
-                addToLogs('[Discord] Generating image to : ' + msg.content.slice(+3));
-                msg.reply('Generating the image...');
+                
             }
         });
     },
@@ -82,7 +71,7 @@ module.exports = {
             }
 
             else if (interaction.commandName === 'dalle') {
-                github(interaction, client);
+                dalle(interaction, client);
             }
         });
     },
