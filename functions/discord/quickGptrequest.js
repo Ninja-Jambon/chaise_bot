@@ -7,7 +7,7 @@ const { incrementQuota, isNewUser } = require('../../libs/mysql');
 async function quickGptrequest(interaction, client) {
     await interaction.deferReply();
 
-    quota = isNewUser(interaction.member.user.id, interaction.member.user.username).catch((err) => {
+    quota = await isNewUser(interaction.member.user.id, interaction.member.user.username).catch((err) => {
         console.log(err);
         addToLogs(err);
     });
