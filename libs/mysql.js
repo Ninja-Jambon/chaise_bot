@@ -167,4 +167,44 @@ async function isNewUser(id, username) {
     });
 }
 
-module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser };
+async function listchannels() {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT id FROM channels', (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                channels = [];
+                results.forEach(element => {
+                    channels.push(element.id);
+                });
+                resolve(channels);
+            }
+        });
+    });
+}
+
+async function addChannel(id) {
+    return new Promise((resolve, reject) => {
+        connection.query('INSERT INTO channels (id) VALUES (' + id + ')', (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+async function deleteChannel(id) {
+    return new Promise((resolve, reject) => {
+        connection.query('DELETE FROM channels WHERE id = ' + id, (error, results, fields) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+module.exports = { addUserToDb, incrementQuota, usersInDb, getQuota, addConv, delConv, getConvs, addMessage, getMessages, isNewUser, listchannels, addChannel, deleteChannel };

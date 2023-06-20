@@ -8,7 +8,7 @@ const telegramEvents = require('./events/telegramEvents');
 
 //bot initialization
 const bot = new Telegraf(process.env.TELEGRAM);
-const client = new discord.Client({intents: 3276799});
+const client = new discord.Client({intents: 33297});
 
 //Telegram events
 telegramEvents.start(bot);

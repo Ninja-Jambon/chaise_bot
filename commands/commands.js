@@ -1,4 +1,4 @@
-const {ApplicationCommandOptionType} = require('discord.js');
+const { ApplicationCommandOptionType } = require('discord.js');
 
 const commands = [
     {
@@ -111,6 +111,32 @@ const commands = [
                 name : 'query',
                 description : 'The query you want to ask to the API',
                 type : ApplicationCommandOptionType.String,
+                required : true,
+            },
+        ],
+    },
+
+    {
+        name : 'addchannel',
+        description : 'Add a channel to the conversation system',
+        options : [
+            {
+                name : 'channel',
+                description : 'The channel you want to add',
+                type : ApplicationCommandOptionType.Channel,
+                required : true,
+            },
+        ],
+    },
+
+    {
+        name : 'deletechannel',
+        description : 'Delete a channel from the conversation system',
+        options : [
+            {
+                name : 'channel',
+                description : 'The channel you want to delete',
+                type : ApplicationCommandOptionType.Channel,
                 required : true,
             },
         ],

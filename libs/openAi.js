@@ -60,4 +60,17 @@ async function sendConv (messages) {
   return response;
 }
 
-module.exports = { generateImage, answerQuestion, sendConv, quickAnswer };
+async function sendQuickConv (messages) {
+  response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: messages,
+    temperature: 0.9,
+  }).catch((err) => {
+    console.log(err);
+    addToLogs("--> error : " + err);
+  })
+  
+  return response;
+}
+
+module.exports = { generateImage, answerQuestion, sendConv, quickAnswer, sendQuickConv };

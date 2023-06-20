@@ -1,8 +1,5 @@
 const discord = require('discord.js');
 
-const { addToLogs } = require('../libs/botTools');
-const { generateImage, } = require('../libs/openAi');
-
 const { commands } = require('../commands/commands');
 
 const gptrequest = require('../functions/discord/gptrequest');
@@ -15,12 +12,39 @@ const displayconv = require('../functions/discord/displayconv');
 const getmyguota = require('../functions/discord/getmyguota');
 const github = require('../functions/discord/github');
 const dalle = require('../functions/discord/dalle');
+const addchannel = require('../functions/discord/addchannel');
+const deletechannel = require('../functions/discord/deletechannel');
+
+const { listchannels, incrementQuota } = require('../libs/mysql');
+const { sendQuickConv } = require('../libs/openAi')
 
 module.exports = {
     newMessage: (client) => {
         client.on('messageCreate', async msg => {
-            if (msg.content.startsWith('/g')) {
+            const channels = await listchannels();
+            channelId = msg.channel.id;
+
+            if (!channels.includes(channelId) || msg.author.bot == true) {} 
+            else {
+                discordMessages = await msg.channel.messages.fetch({ limit: 15 })
+
+                discordMessages.reverse();
+
+                messages = [{"role": "system", "content": "You are a helpful assistant."}];
+
+                discordMessages.forEach(async message => {
+                    if (msg.author.id == '1059559067846189067') {
+                        messages.push({"role" : "assistant", "content" : message.content});
+                    } else {
+                        messages.push({"role" : "user", "content" : message.content});
+                    }
+                });
+
+                response = await sendQuickConv(messages);
+
+                msg.reply(response.data.choices[0].message.content);
                 
+                incrementQuota(msg.author.id, response.data.usage.total_tokens);
             }
         });
     },
@@ -73,28 +97,30 @@ module.exports = {
             else if (interaction.commandName === 'dalle') {
                 dalle(interaction, client);
             }
+
+            else if (interaction.commandName === 'addchannel') {
+                addchannel(interaction, client);
+            }
+
+            else if (interaction.commandName === 'deletechannel') {
+                deletechannel(interaction, client);
+            }
         });
     },
 
     ready: (client) => {
-        client.on('ready', () => {
+        client.on('ready', async () => {
             console.log(`[Discord] Logged in as ${client.user.tag} !`);
             client.user.setPresence({ activities: [{ name: 'la belle chaise', type: 3 }] });
 
             const rest = new discord.REST({ version: '10' }).setToken(process.env.DISCORD);
 
-            client.guilds.cache.forEach(async (guild) => {
-                try {
-                    await rest.put(
-                        discord.Routes.applicationGuildCommands('1059559067846189067', guild.id),
-                        { body: commands },
-                    );
+            await rest.put(
+                discord.Routes.applicationCommands('1059559067846189067'),
+                { body: commands },
+            );
 
-                    console.log('[Discord] Successfully reloaded application (/) commands for ' + guild.name + '.');
-                } catch (error) {
-                    console.error(error);
-                }
-            })
+            console.log('[Discord] Successfully reloaded application (/) commands globally.');
         });
     },
 
