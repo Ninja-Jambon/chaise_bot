@@ -141,6 +141,11 @@ const commands = [
             },
         ],
     },
+
+    {
+        name : 'help',
+        description : 'Get help',
+    },
 ];
 
 module.exports = { commands };
