@@ -12,11 +12,11 @@ async function gptrequest(interaction, client) {
         addToLogs(err);
     });
 
-    if (quota >= 200000) {
+    if (quota.quota >= 200000) {
         const embed = new discord.EmbedBuilder()
             .setColor(0xFABBDE)
             .setAuthor({ name: "Quota exceeded", iconURL: client.user.displayAvatarURL() })
-            .setDescription("You have a quota of " + quota + " tokens, please wait until reset (every months)")
+            .setDescription("You have a quota of " + quota.quota + " tokens, please wait until reset (every months)")
             .setFooter({ text: "Powered by OpenAI https://www.openai.com/", iconURL: "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
 
         interaction.editReply({ embeds: [embed] });

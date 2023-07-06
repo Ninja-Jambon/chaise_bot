@@ -12,7 +12,7 @@ async function addmsg(interaction, client) {
         addToLogs(err);
     });
 
-    if (quota >= 200000) {
+    if (quota.quota >= 200000) {
         const embed = new discord.EmbedBuilder()
             .setColor(0xFABBDE)
             .setAuthor({ name: "Quota exceeded", iconURL: client.user.displayAvatarURL() })

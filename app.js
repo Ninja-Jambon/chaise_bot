@@ -11,7 +11,6 @@ const client = new discord.Client({intents: 33297});
 discordEvents.ready(client);
 discordEvents.newMessage(client);
 discordEvents.newInteraction(client);
-discordEvents.guildCreate(client);
 
 //bot launch
 client.login(process.env.DISCORD);

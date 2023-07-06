@@ -15,7 +15,7 @@ const dalle = require('../functions/discord/dalle');
 const addchannel = require('../functions/discord/addchannel');
 const deletechannel = require('../functions/discord/deletechannel');
 
-const { listchannels, incrementQuota } = require('../libs/mysql');
+const { listchannels, incrementQuota, isNewUser } = require('../libs/mysql');
 const { sendQuickConv } = require('../libs/openAi')
 
 module.exports = {
@@ -24,9 +24,23 @@ module.exports = {
             const channels = await listchannels();
             channelId = msg.channel.id;
 
+            quota = await isNewUser(msg.author.id, msg.author.username).catch((err) => {
+                console.log(err);
+                addToLogs(err);
+            });
+
             if (!channels.includes(channelId) || msg.author.bot == true) {} 
-            else {
-                discordMessages = await msg.channel.messages.fetch({ limit: 15 })
+        
+            else if (quota.quota >= 200000) {
+                const embed = new discord.EmbedBuilder()
+                    .setColor(0xFABBDE)
+                    .setAuthor({ name: "Quota exceeded", iconURL: client.user.displayAvatarURL() })
+                    .setDescription("Quota exceeded, please wait untill reset (every month)")
+                    .setFooter({ text: "Powered by OpenAI https://www.openai.com/", iconURL: "https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" });
+        
+                msg.reply({ embeds: [embed] });
+            } else {
+                discordMessages = await msg.channel.messages.fetch({ limit: 8 })
 
                 discordMessages.reverse();
 
@@ -111,7 +125,8 @@ module.exports = {
     ready: (client) => {
         client.on('ready', async () => {
             console.log(`[Discord] Logged in as ${client.user.tag} !`);
-            client.user.setPresence({ activities: [{ name: 'la belle chaise', type: 3 }] });
+
+            client.user.setPresence({ activities: [{ name: client.guilds.cache.size + ' servers !', type: 3 }] });
 
             const rest = new discord.REST({ version: '10' }).setToken(process.env.DISCORD);
 
@@ -121,23 +136,6 @@ module.exports = {
             );
 
             console.log('[Discord] Successfully reloaded application (/) commands globally.');
-        });
-    },
-
-    guildCreate: (client) => {
-        client.on('guildCreate', async (guild) => {
-            const rest = new discord.REST({ version: '10' }).setToken(process.env.DISCORD);
-
-            try {
-                await rest.put(
-                    discord.Routes.applicationGuildCommands('1059559067846189067', guild.id),
-                    { body: commands },
-                );
-
-                console.log('[Discord] Successfully reloaded application (/) commands for ' + guild.name + '.');
-            } catch (error) {
-                console.error(error);
-            }
         });
     },
 }
