@@ -1,9 +1,0 @@
-This is the games help message :
-
-list of games commands :
-
-    -`/rps <rock/paper/scissors>` (used to play rock paper scissors against the bot)
-
-    -`/truce` (reply to a message with that command to verify it)
-
-    -`/dadjoke` (send a dad joke)

@@ -1,4 +1,2 @@
-tests.js
-register-commands.js
-docker-compose.yml
 .env
+node_modules
