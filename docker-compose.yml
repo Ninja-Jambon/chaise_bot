@@ -6,13 +6,5 @@ services:
       context: .
       dockerfile: DOCKERFILE
     restart: always
-    networks: 
-      db_system:
-        ipv4_address: 172.16.0.11
     volumes:
       - /home/lucien/chaisebot:/app
-
-networks:
-  db_system:
-    name : dbsystem_db_system
-    external: true

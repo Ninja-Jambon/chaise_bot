@@ -1,15 +1,16 @@
 {
-  "name": "chaise_bot_2.0",
-  "version": "1.0.0",
+  "name": "chaise_bot",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon bot.js"
+    "dev": "nodemon bot.js",
+    "start": "node bot.js"
   },
-  "author": "",
+  "author": "Ninja Jambon",
   "license": "ISC",
   "dependencies": {
-    "@mistralai/mistralai": "^0.0.10",
+    "axios": "^1.6.7",
     "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",
     "mysql": "^2.18.1",
