@@ -1,4 +1,4 @@
 FROM node:latest
 WORKDIR /app
 COPY . /app
-CMD ["node", "bot.js"]
+CMD ["npm", "run", "start"]
