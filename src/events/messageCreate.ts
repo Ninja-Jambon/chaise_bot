@@ -1,17 +1,13 @@
 import { Events, Message } from "discord.js";
-import { getChatResponse, MistralMessage, Models, InputPrice, OutputPrice, ReturnedValue } from "../libs/mistralai";
-import { User, connectToDb, addUser, getUser, incrementQuota } from "../libs/mysql";
-import { getMessages } from "../libs/discord";
+import { getChatResponse, MistralMessage, Models, InputPrice, OutputPrice, ReturnedValue } from "../libs/mistralai.js";
+import { User, connectToDb, addUser, getUser, incrementQuota } from "../libs/mysql.js";
+import { getMessages } from "../libs/discord.js";
 
-module.exports = {
+export default {
     name: Events.MessageCreate,
     async execute(message: Message) {
         if (!message.guildId && message.author.id != process.env.BOT_ID) {
             const prompt: string = message.content;
-
-            if (message.author.id != '372437660167438337') {
-                return message.reply("you are not allowed to use this command");
-            }
 
             const connection = await connectToDb();
 

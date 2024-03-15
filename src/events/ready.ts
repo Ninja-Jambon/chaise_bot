@@ -1,7 +1,7 @@
 import { Events, Client } from "discord.js";
-import { checkReset } from "../libs/quotaReset";
+import { checkReset } from "../libs/quotaReset.js";
 
-module.exports = {
+export default {
     name: Events.ClientReady,
     once: true,
     execute(client: Client) {

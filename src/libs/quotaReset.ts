@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { connectToDb, resetQuota } from "./mysql";
+import { connectToDb, resetQuota } from "./mysql.js";
 
 function getLastResetDate(): number {
   const data: string = fs.readFileSync("../data/lastreset.txt", "utf8");

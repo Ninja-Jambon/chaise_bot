@@ -36,6 +36,10 @@ export interface ReturnedValue {
     responseUsage: number,
 }
 
+export enum Prompts {
+    default = "You are an helpful assistant, you always answer in the language of the user.",
+}
+
 const apiKey = process.env.MISTRAL_API_KEY;
 
 const client = new MistralClient(apiKey);

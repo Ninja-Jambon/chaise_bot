@@ -1,10 +1,8 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
-import { getChatResponse, MistralMessage, Models, InputPrice, OutputPrice, ReturnedValue } from "../../libs/mistralai";
-import { User, connectToDb, addUser, getUser, incrementQuota } from "../../libs/mysql";
+import { getChatResponse, MistralMessage, Models, InputPrice, OutputPrice, ReturnedValue, Prompts } from "../../libs/mistralai.js";
+import { User, connectToDb, addUser, getUser, incrementQuota } from "../../libs/mysql.js";
 
-const data = require("../../../config.json");
-
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName("ask")
         .setDescription("Make a single request to mistral API")
@@ -13,8 +11,8 @@ module.exports = {
             option.setName("prompt").setDescription("The prompt to send to the API").setRequired(true)
         ),
     async execute(interaction: ChatInputCommandInteraction) {
-        if (interaction.member?.user.id != '372437660167438337') {
-            return interaction.reply("you are not allowed to use this command");
+        if (interaction.member?.user.id == undefined) {
+            return;
         }
 
         await interaction.deferReply();
@@ -39,7 +37,7 @@ module.exports = {
         const messages: MistralMessage[] = [
             {
                 role: "system",
-                content: data.defaultPrompt
+                content: Prompts.default
             },
             {
                 role: "user",
