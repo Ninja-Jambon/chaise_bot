@@ -1,11 +1,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import "dotenv/config";
-import { Client, Collection, REST, Routes, RESTPutAPIApplicationCommandsResult } from 'discord.js';
+import { Client, Collection, REST, Routes, RESTPutAPIApplicationCommandsResult, GatewayIntentBits, Partials } from 'discord.js';
 
 const client: Client = new Client({
-	intents: [],
-	partials: []
+	intents: [
+	    GatewayIntentBits.Guilds,
+	    GatewayIntentBits.GuildMessages,
+	    GatewayIntentBits.MessageContent,
+    	GatewayIntentBits.DirectMessages,
+   	],
+	partials: [
+		Partials.Channel,
+		Partials.Message,
+	]
 })
 
 client.commands = new Collection();
