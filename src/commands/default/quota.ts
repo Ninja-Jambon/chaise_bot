@@ -17,9 +17,9 @@ export default {
 		connection.end();
 
 		if (!user[0]) {
-			return interaction.editReply({ embeds: [ errorEmbed("Try asking something to the bot before requesting your quota.") ] });
+			return interaction.editReply({ embeds: [ errorEmbed("Try asking something to the bot before requesting your quota.", interaction.client.user.displayAvatarURL()) ] });
 		}
 
-		interaction.editReply({ embeds: [ quotaEmbed(user[0].quota) ] });
+		interaction.editReply({ embeds: [ quotaEmbed(user[0].quota, interaction.client.user.displayAvatarURL()) ] });
 	},
 };

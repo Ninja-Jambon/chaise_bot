@@ -2,7 +2,7 @@ import { Events, Message, Collection, EmbedBuilder, WebhookClient } from "discor
 import { getChatResponse, MistralMessage, Models, InputPrice, OutputPrice, ReturnedValue, Prompts } from "../libs/mistralai.js";
 import { User, connectToDb, addUser, getUser, incrementQuota } from "../libs/mysql.js";
 
-export function helpEmbed() {
+export function helpEmbed(iconURL: string) {
 	return new EmbedBuilder()
 		.setTitle("Help :")
 		.setDescription(
@@ -12,6 +12,8 @@ export function helpEmbed() {
 - \`/help\` : display this message
 - \`/ask\` : make a single request to mistralAi API
 - \`/quota\` : send how many credits you have left for the month
+- \`/botinfo\` : send the infos about the bot
+- \`/vote\` : send the top.gg vote link of the bot
 
 **Other way to use the bot**
 
@@ -20,15 +22,15 @@ export function helpEmbed() {
 
 **Quota**
 
-- You have 0.4$ of free credits
+- You have 0.4$ of free credits each month
 `
 )
-		.setFooter({ text: "Bot by @ninja_jambon."})
+		.setFooter({ text: "Bot by @ninja_jambon.", iconURL: iconURL})
 		.setColor("#000000");
 
 }
 
-export function errorEmbed(error: string) {
+export function errorEmbed(error: string, iconURL: string) {
 	return new EmbedBuilder()
 		.setTitle("Error")
 		.setDescription(error)
@@ -36,7 +38,7 @@ export function errorEmbed(error: string) {
 		.setColor("#000000");
 }
 
-export function quotaEmbed(quota: number) {
+export function quotaEmbed(quota: number, iconURL: string) {
 	return new EmbedBuilder()
 		.setTitle("Quota left")
 		.setDescription(`You have ${0.4 - quota}$ left this month.`)

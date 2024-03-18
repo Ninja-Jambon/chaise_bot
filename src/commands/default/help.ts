@@ -6,6 +6,6 @@ export default {
 		.setName("help")
 		.setDescription("Send the help message"),
 	async execute(interaction: CommandInteraction) {
-		await interaction.reply({ embeds: [ helpEmbed() ] });
+		await interaction.reply({ embeds: [ helpEmbed(interaction.client.user.displayAvatarURL()) ] });
 	},
 };
