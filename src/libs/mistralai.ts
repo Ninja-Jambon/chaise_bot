@@ -37,7 +37,7 @@ export interface ReturnedValue {
 }
 
 export enum Prompts {
-	default = "You are an helpful assistant, you always answer in the language of the user.",
+	default = "You are an helpful assistant.",
 }
 
 const apiKey = process.env.MISTRAL_API_KEY;
@@ -48,6 +48,7 @@ export async function getChatResponse(messages: MistralMessage[], model: Models)
 	const chatResponse = await client.chat({
 		model: model,
 		messages: messages,
+		maxTokens: 450,
 	});
 
 	return {

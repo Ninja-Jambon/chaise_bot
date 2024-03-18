@@ -1,4 +1,4 @@
-import { Events, Message, Collection, EmbedBuilder } from "discord.js";
+import { Events, Message, Collection, EmbedBuilder, WebhookClient } from "discord.js";
 import { getChatResponse, MistralMessage, Models, InputPrice, OutputPrice, ReturnedValue, Prompts } from "../libs/mistralai.js";
 import { User, connectToDb, addUser, getUser, incrementQuota } from "../libs/mysql.js";
 
@@ -16,6 +16,7 @@ export function helpEmbed() {
 **Other way to use the bot**
 
 - You can DM the bot and it will answer you and remember the 6 previous messages
+- You can also ping the bot or reply to one of its messages to ask it something
 
 **Quota**
 
@@ -63,4 +64,12 @@ export async function getMessages(message: Message, channelid: string, userid: s
 	})
 
 	return messages;
+}
+
+export function sendLog(text: string) {
+	const webhook: WebhookClient = new WebhookClient({ id : '1187067107054202961', token : 'M7bsyOwFPMXQTMB8tvrWZu-gLT9rSjl1NASOBrz-z4lwvbwQ9To_yAywE_4aj5oGBP0D' });
+
+	webhook.send({
+		content: text,
+	})
 }

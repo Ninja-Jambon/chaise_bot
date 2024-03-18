@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import "dotenv/config";
 import { Client, Collection, REST, Routes, RESTPutAPIApplicationCommandsResult, GatewayIntentBits, Partials } from 'discord.js';
+import { sendLog } from './libs/discord.js';
 
 const client: Client = new Client({
 	intents: [
@@ -82,3 +83,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN ? process.env.DISCORD
 })();
 
 client.login(process.env.DISCORD_TOKEN);
+
+process.on('uncaughtException', err => {
+	sendLog(err.toString());
+});
