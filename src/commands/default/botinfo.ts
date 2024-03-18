@@ -12,6 +12,7 @@ export default {
 `
 - Servers : ${interaction.client.guilds.cache.size}
 - Users : ${interaction.client.users.cache.size}
+- [Github Repository](https://github.com/Ninja-Jambon/chaise_bot)
 `
 			)
 			.setFooter({ text: "Bot by @ninja_jambon.", iconURL: interaction.client.user.displayAvatarURL()})
