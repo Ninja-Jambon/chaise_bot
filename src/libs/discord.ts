@@ -69,7 +69,7 @@ export async function getMessages(message: Message, channelid: string, userid: s
 }
 
 export function sendLog(text: string) {
-	const webhook: WebhookClient = new WebhookClient({ id : '1187067107054202961', token : 'M7bsyOwFPMXQTMB8tvrWZu-gLT9rSjl1NASOBrz-z4lwvbwQ9To_yAywE_4aj5oGBP0D' });
+	const webhook: WebhookClient = new WebhookClient({ id : process.env.WEBHOOK_ID ? process.env.WEBHOOK_ID : "", token : process.env.WEBHOOK_TOKEN ? process.env.WEBHOOK_TOKEN : "" });
 
 	webhook.send({
 		content: text,
