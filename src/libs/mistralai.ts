@@ -1,4 +1,4 @@
-import MistralClient from '@mistralai/mistralai';
+import MistralClient, { ResponseFormats } from '@mistralai/mistralai';
 import "dotenv/config";
 
 export interface MistralMessage {
@@ -37,7 +37,16 @@ export interface ReturnedValue {
 }
 
 export enum Prompts {
-	default = "You are an helpful assistant.",
+	default = "Tu es un bot discord qui répond amicalement.",
+	qotd = `Tu es un bot discord qui envoie des questions du jour sur un thème donné par l'utilisateur ou de ton choix s'il n'en a pas donné. Tu ne dois répondre avec ce format json : {qotd: String}. 
+			Voici plus d'info :
+			Ton à employer: amical
+			But des questions: faire en sorte que les membres parlent d'eux
+			Exemples de questions:
+			- Quel est votre parfun de glaces préféré et pourquoi ?
+			- Si c'était la fin du monde que feriez vous ?
+			- Si vous deviez ressuscité un personnage de film/série/livre ça serait qui et pourquoi ?
+			- Si tu pouvais redessiner la carte du monde, quels pays fusionnerais-tu ou diviserais-tu, et pour quelles raisons?`
 }
 
 const apiKey = process.env.MISTRAL_API_KEY;
@@ -49,6 +58,21 @@ export async function getChatResponse(messages: MistralMessage[], model: Models)
 		model: model,
 		messages: messages,
 		maxTokens: 450,
+	});
+
+	return {
+		message: chatResponse.choices[0].message.content,
+		promptUsage: chatResponse.usage.prompt_tokens,
+		responseUsage: chatResponse.usage.completion_tokens,
+	};
+}
+
+export async function getQotd(messages: MistralMessage[], model: Models): Promise<ReturnedValue> {
+	const chatResponse = await client.chat({
+		model: model,
+		// @ts-ignore: Unreachable code error
+		response_format: {'type': 'json_object'},
+		messages: messages,
 	});
 
 	return {

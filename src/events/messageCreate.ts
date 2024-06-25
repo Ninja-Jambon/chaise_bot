@@ -6,7 +6,7 @@ import { getMessages } from "../libs/discord.js";
 export default {
 	name: Events.MessageCreate,
 	async execute(message: Message) {
-		if ((!message.guildId && message.author.id != process.env.BOT_ID) || (message.content.includes(`<@${process.env.BOT_ID}>`) && message.author.id != process.env.BOT_ID) || message.mentions.repliedUser?.id == process.env.BOT_ID) {
+		if ((!message.guildId && message.author.id != process.env.BOT_ID) || (message.content.includes(`<@${process.env.BOT_ID}>`) && message.author.id != process.env.BOT_ID) || (message.mentions.repliedUser?.id == process.env.BOT_ID && message.embeds.length == 0)) {
 			const connection = await connectToDb();
 
 			var user: User[] = await getUser(connection, message.author.id);

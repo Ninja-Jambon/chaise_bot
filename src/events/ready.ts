@@ -7,14 +7,14 @@ export default {
 	execute(client: Client) {
 		console.log(`Ready! Logged in as ${client.user?.tag}`);
 		
-		client.user?.setPresence({ activities: [{ name: '/help | Version 3.0 !', type: 3 }] });
+		client.user?.setPresence({ activities: [{ name: '/ask | Bot fixed !', type: 3 }] });
 
 		setInterval(async () => {
 			await checkReset();
 		}, 1000); //10 * 60 * 
 
 		setInterval(async () => {
-			client.user?.setPresence({ activities: [{ name: '/ask | Version 3.0 !', type: 3 }] });
+			client.user?.setPresence({ activities: [{ name: '/ask | Bot fixed !', type: 3 }] });
 		}, 10 * 60 * 1000);
 	},
 };
