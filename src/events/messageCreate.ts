@@ -6,7 +6,14 @@ import { getMessages } from "../libs/discord.js";
 export default {
 	name: Events.MessageCreate,
 	async execute(message: Message) {
-		if ((!message.guildId && message.author.id != process.env.BOT_ID) || (message.content.includes(`<@${process.env.BOT_ID}>`) && message.author.id != process.env.BOT_ID) || (message.mentions.repliedUser?.id == process.env.BOT_ID && message.embeds.length == 0)) {
+		var reply_to_embed = false;
+		if (message.reference) {
+			// @ts-ignore: Unreachable code error
+			const msg = await message.channel.messages.fetch(message.reference.messageId)
+			if (msg.embeds.length != 0) reply_to_embed = true
+		}
+
+		if ((!message.guildId && message.author.id != process.env.BOT_ID) || (message.content.includes(`<@${process.env.BOT_ID}>`) && message.author.id != process.env.BOT_ID) || (message.mentions.repliedUser?.id == process.env.BOT_ID && !reply_to_embed)) {
 			const connection = await connectToDb();
 
 			var user: User[] = await getUser(connection, message.author.id);
