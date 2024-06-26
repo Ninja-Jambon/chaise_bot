@@ -52,7 +52,7 @@ export default {
 			.addComponents(cancel, confirm);
 
 		// @ts-ignore: Unreachable code error
-        const reply = await interaction.reply({embeds: [confirm_embed], content: role ? `<@&${role.id}>` : '', components: [row], ephemeral: true});
+        const reply = await interaction.reply({embeds: [confirm_embed], components: [row], ephemeral: true});
 
 	    const confirmation = await reply.awaitMessageComponent({ time: 60_000 });
 
