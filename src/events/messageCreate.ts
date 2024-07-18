@@ -7,7 +7,7 @@ export default {
 	name: Events.MessageCreate,
 	async execute(message: Message) {
 		var reply_to_embed = false;
-		if (message.reference) {
+		if (message.reference?.messageId) {
 			// @ts-ignore: Unreachable code error
 			const msg = await message.channel.messages.fetch(message.reference.messageId)
 			if (msg.embeds.length != 0) reply_to_embed = true
