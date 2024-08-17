@@ -1,11 +1,11 @@
 import { Events, Guild } from "discord.js";
-import { connectToDb, getguild, addGuild } from "../libs/mysql.js";
+import { connectToDb, getGuild, addGuild } from "../libs/mysql.js";
 
 export default {
 	name: Events.GuildCreate,
 	async execute(guild: Guild) {
 		const connection = await connectToDb();
-        const guild_obj: any[] = await getguild(connection, guild.id);
+        const guild_obj: any[] = await getGuild(connection, guild.id);
 
         connection.end()
 
