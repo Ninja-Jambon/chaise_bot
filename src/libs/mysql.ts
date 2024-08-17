@@ -73,3 +73,27 @@ export function resetQuota(connection: mysql.Connection) {
 		})
 	})
 }
+
+export function getguild(connection: mysql.Connection, guild_id: string): Promise<any[]> {
+	return new Promise((resolve, reject) => {
+		connection.query(`SELECT * FROM guilds WHERE guild_id = "${guild_id}"`, (error, result) => {
+			if (error) {
+				reject(error);
+			}
+
+			resolve(result);
+		})
+	})
+}
+
+export function addGuild(connection: mysql.Connection, guild_id: string) {
+	return new Promise((resolve, reject) => {
+		connection.query(`INSERT INTO guilds (guild_id) VALUES ("${guild_id}")`, (error, result) => {
+			if (error) {
+				reject(error);
+			}
+
+			resolve(result);
+		})
+	})
+}

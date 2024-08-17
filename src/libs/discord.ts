@@ -37,6 +37,14 @@ export function errorEmbed(error: string, iconURL: string) {
 		.setColor("#000000");
 }
 
+export function successEmbed(message: string, iconURL: string) {
+	return new EmbedBuilder()
+		.setTitle("Success")
+		.setDescription(message)
+		.setFooter({ text: "Bot by @ninja_jambon.", iconURL: iconURL})
+		.setColor("#000000");
+}
+
 export function quotaEmbed(quota: number, iconURL: string) {
 	return new EmbedBuilder()
 		.setTitle("Quota left")
