@@ -1,4 +1,4 @@
-import MistralClient, { ResponseFormats } from '@mistralai/mistralai';
+import MistralClient from '@mistralai/mistralai';
 import "dotenv/config";
 
 export interface MistralMessage {
