@@ -32,6 +32,8 @@ export default {
 
         await setAdminRole(connection, guild_id, role_id ? role_id : "");
 
+        connection.end()
+
         const embed = successEmbed("The bot admin role has been successfully changed.", interaction.client.user.displayAvatarURL())
 
         interaction.reply({embeds: [embed]})

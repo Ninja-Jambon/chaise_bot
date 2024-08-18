@@ -40,6 +40,8 @@ export default {
 
         setFeature(connection, guild_id, feature ? feature : "", "true");
 
+        connection.end()
+
         const embed = successEmbed("The feature has been successfully activated.", interaction.client.user.displayAvatarURL())
 
         interaction.reply({embeds: [embed]})
