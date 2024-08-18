@@ -109,3 +109,15 @@ export function setAdminRole(connection: mysql.Connection, guild_id: string, rol
 		})
 	})
 }
+
+export function setFeature(connection: mysql.Connection, guild_id: string, feature: string, code: string) {
+	return new Promise((resolve, reject) => {
+		connection.query(`UPDATE guilds SET ${feature} = ${code} WHERE guild_id = "${guild_id}"`, (error, result) => {
+			if (error) {
+				reject(error);
+			}
+
+			resolve(result);
+		})
+	})
+}
