@@ -20,7 +20,23 @@ export async function createWelcomeImage(background_url: string, icon_url: strin
     const ctx = canvas.getContext('2d')
 
     ctx.drawImage(background, 0, 0, width, height);
-    ctx.drawImage(icon, height / 4, height / 4, height / 4 * 2, height / 4 * 2);
+
+    const circle = {
+        x: height / 2,
+        y: height / 2,
+        radius: height / 4,
+    }
+
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+
+    const aspect = icon.height / icon.width;
+    const hsx = circle.radius * Math.max(1.0 / aspect, 1.0);
+    const hsy = circle.radius * Math.max(aspect, 1.0);
+
+    ctx.drawImage(icon,circle.x - hsx,circle.y - hsy,hsx * 2,hsy * 2);
 
     const buffer = canvas.toBuffer("image/png");
     return buffer;
