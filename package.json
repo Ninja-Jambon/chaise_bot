@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src",
     "build": "tsc",
-    "start": "node dist --verbose"
+    "start": "node dist"
   },
   "keywords": [],
   "author": "",
