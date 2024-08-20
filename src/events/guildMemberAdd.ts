@@ -9,6 +9,8 @@ export default {
         const guild = await getGuild(connection, member.guild.id);
         const config = await getWelcomeConfig(connection, member.guild.id);
 
+        connection.end();
+
         if (guild[0]?.welcome_message && config[0]) {
             const embed = new EmbedBuilder();
 
