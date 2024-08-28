@@ -11,7 +11,7 @@ export default {
 
 		setInterval(async () => {
 			await checkReset();
-		}, 1000); //10 * 60 * 
+		}, 1000);
 
 		setInterval(async () => {
 			client.user?.setPresence({ activities: [{ name: '/ask | Bot fixed !', type: 3 }] });

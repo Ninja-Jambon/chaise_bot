@@ -12,4 +12,6 @@ RUN apt-get update && apt-get install -y \
     libgif-dev \
     librsvg2-dev
 
-CMD ["npm", "start"]
+RUN npm i -g typescript && npm i && npm run build
+
+CMD npm start

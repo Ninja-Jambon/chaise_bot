@@ -1,21 +1,15 @@
 import * as fs from "fs";
-import { connectToDb, resetQuota } from "./mysql.js";
-
-function getLastResetDate(): number {
-  const data: string = fs.readFileSync("./src/data/lastreset.txt", "utf8");
-  return parseInt(data);
-}
+import { connectToDb, resetQuota, getLastReset, addReset } from "./mysql.js";
 
 export async function checkReset() {
-	const lastResetDate = getLastResetDate();
+	const connection = await connectToDb();
+	const lastReset = await getLastReset(connection);
 	const now = Date.now() / 1000;
 
-	if (now - lastResetDate > 1000 * 60 * 60 * 24 * 30) {
-		fs.writeFileSync("./src/data/lastreset.txt", now.toString());
-
-		const connection = await connectToDb();
-
+	// @ts-ignore
+	if (lastReset[0] && now - lastReset[0].date > 1000 * 60 * 60 * 24 * 30) {
 		await resetQuota(connection);
+		await addReset(connection, now)
 
 		connection.end();
 

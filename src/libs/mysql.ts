@@ -1,4 +1,6 @@
 import * as mysql from "mysql";
+import { rejects } from "node:assert";
+import { resolve } from "node:path";
 
 export interface User {
 	id: number,
@@ -154,6 +156,30 @@ export function setWelcomePropertiy(connection: mysql.Connection, guild_id: Stri
 			}
 
 			resolve(result);
+		})
+	})
+}
+
+export function getLastReset(connection: mysql.Connection) {
+	return new Promise((resolve, reject) => {
+		connection.query("SELECT MAX(date) FROM resets", (error, result) => {
+			if (error) {
+				reject(error);
+			}
+
+			resolve(result)
+		})
+	})
+}
+
+export function addReset(connection: mysql.Connection, date: number) {
+	return new Promise((resolve, reject) => {
+		connection.query(`INSERT INTO resets (date) VALUES (${date})`, (error, result) => {
+			if (error) {
+				reject(error);
+			}
+
+			resolve(result)
 		})
 	})
 }
