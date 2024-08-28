@@ -1,8 +1,14 @@
 import { createCanvas, loadImage } from 'canvas';
+import { BufferResolvable } from 'discord.js';
 import * as  fs from "node:fs";
 
-export async function createWelcomeImage(background_url: string, icon_url: string, user_id: string) {
+export async function createWelcomeImage(background_url: string, icon_url: string, user_id: string) : Promise<Buffer | undefined> {
     const background = await loadImage(background_url)
+
+    if (!background) {
+        return;
+    }
+
     const icon = await loadImage(icon_url)
 
     var width;

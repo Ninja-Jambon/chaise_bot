@@ -4,7 +4,6 @@
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
         "resolveJsonModule": true,
-        "strict": true,
         "outDir": "./dist",
         "skipLibCheck": true,
         "noImplicitAny": true,
