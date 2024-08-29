@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import { connectToDb, resetQuota, getLastReset, addReset } from "./mysql.js";
 
 export async function checkReset() {
