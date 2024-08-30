@@ -14,6 +14,8 @@ export async function checkReset() {
 
 		return;
 	} else {
+		connection.end();
+
 		return false;
 	}
 }
